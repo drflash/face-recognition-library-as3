@@ -1,0 +1,2304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../../../../style.css" type="text/css" media="screen">
+<link rel="stylesheet" href="../../../../print.css" type="text/css" media="print">
+<meta content="KMatrix,com.karthik.math.lingalg.KMatrix,A,m,n,arrayLeftDivide,arrayLeftDivideEquals,arrayRightDivide,arrayRightDivideEquals,arrayTimes,arrayTimesEquals,chol,clone,cond,constructWithCopy,copy,det,eig,getArray,getArrayCopy,getColumnDimension,getColumnPackedCopy,getColumns,getMatrixWithIndex,getMatrixWithRange,getMatrixWithRowIndexColumnRange,getMatrixWithRowRangeColumnIndex,getRowDimension,getRowPackedCopy,getRows,identity,inverse,lu,makeFromArray,makeFromColumnPacked,makeFromImage,makeFromRowPacked,makeUsingArray,makeWithCopy,minus,minusEquals,norm1,norm2,normF,normInf,plus,plusEquals,qr,random,rank,setArray,setMatrixWithIndex,setMatrixWithRange,setMatrixWithRowIndexColumnRange,setMatrixWithRowRangeColumnIndex,solve,solveTranspose,svd,times,timesEquals,timesScalar,toString,traceMatrix,transpose,uminus,get,set" name="keywords">
+<title>com.karthik.math.lingalg.KMatrix</title>
+</head>
+<body>
+<script type="text/javascript" language="javascript" src="../../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../../cookies.js"></script><script type="text/javascript" language="javascript">
+<!--
+				asdocTitle = 'KMatrix - API Documentation';
+				var baseRef = '../../../../';
+				window.onload = configPage;
+			--></script>
+<table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
+<tr>
+<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../all-classes.html')" href="../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../all-classes.html')" href="../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../index-list.html')" href="../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../index.html?com/karthik/math/lingalg/KMatrix.html&amp;com/karthik/math/lingalg/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../images/logo.jpg"></td>
+</tr>
+<tr class="titleTableRow2">
+<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;KMatrix</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a></td>
+</tr>
+<tr class="titleTableRow3">
+<td colspan="2">&nbsp;</td>
+</tr>
+</table>
+<script type="text/javascript" language="javascript">
+<!--
+if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class KMatrix"); titleBar_setSubNav(false,true,false,false,false,false,true,false,false,false,false,false,false,false);}
+--></script>
+<div class="MainContent">
+<table cellspacing="0" cellpadding="0" class="classHeaderTable">
+<tr>
+<td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">com.karthik.math.lingalg</a></td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class KMatrix</td>
+</tr>
+</table>
+<p></p>
+    Jama = Java Matrix class.
+    <P>
+    The Java Matrix Class provides the fundamental operations of numerical
+    linear algebra.  Various constructors create Matrices from two dimensional
+    arrays of double precision floating point numbers.  Various "gets" and
+    "sets" provide access to submatrices and matrix elements.  Several methods
+    implement basic matrix arithmetic, including matrix addition and
+    multiplication, matrix norms, and element-by-element array operations.
+    Methods for reading and printing matrices are also included.  All the
+    operations in this version of the Matrix Class involve real matrices.
+    Complex matrices may be handled in a future version.
+    <P>
+    Five fundamental matrix decompositions, which consist of pairs or triples
+    of matrices, permutation vectors, and the like, produce results in five
+    decomposition classes.  These decompositions are accessed by the Matrix
+    class to compute solutions of simultaneous linear equations, determinants,
+    inverses and other matrix functions.  The five decompositions are:
+    <P><UL>
+    <LI>Cholesky Decomposition of symmetric, positive definite matrices.
+    <LI>LU Decomposition of rectangular matrices.
+    <LI>QR Decomposition of rectangular matrices.
+    <LI>Singular Value Decomposition of rectangular matrices.
+    <LI>Eigenvalue Decomposition of both symmetric and nonsymmetric square matrices.
+    </UL>
+    <DL>
+    <DT><B>Example of use:</B></DT>
+    <P>
+    <DD>Solve a linear system A x = b and compute the residual norm, ||b - A x||.
+    <P><PRE>
+    double[][] vals = {{1.,2.,3},{4.,5.,6.},{7.,8.,10.}};
+    Matrix A = new Matrix(vals);
+    Matrix b = Matrix.random(3,1);
+    Matrix x = A.solve(b);
+    Matrix r = A.times(x).minus(b);
+    double rnorm = r.normInf();
+    </PRE></DD>
+    </DL>
+ 
+    <p></p>
+<br>
+<hr>
+</div>
+<a name="propertySummary"></a><a name="protectedPropertySummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Protected Properties</div>
+<table id="summaryTableProtectedProperty" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#A">A</a> : Array<div class="summaryTableDescription"> Array for internal storage of elements.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#m">m</a> : int<div class="summaryTableDescription"> Row and column dimensions.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#n">n</a> : int<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+</table>
+</div>
+<a name="methodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Methods</div>
+<table id="summaryTableMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#KMatrix()">KMatrix</a>(m:int, n:int)</div>
+<div class="summaryTableDescription"> Construct an m-by-n matrix of zeros.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#arrayLeftDivide()">arrayLeftDivide</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Element-by-element left division, C = A.\B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#arrayLeftDivideEquals()">arrayLeftDivideEquals</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Element-by-element left division in place, A = A.\B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#arrayRightDivide()">arrayRightDivide</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Element-by-element right division, C = A./B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#arrayRightDivideEquals()">arrayRightDivideEquals</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Element-by-element right division in place, A = A./B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#arrayTimes()">arrayTimes</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Element-by-element multiplication, C = A.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#arrayTimesEquals()">arrayTimesEquals</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Element-by-element multiplication in place, A = A.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#chol()">chol</a>():<a href="../lingalg/CholeskyDecomposition.html">CholeskyDecomposition</a>
+</div>
+<div class="summaryTableDescription"> Cholesky Decomposition
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#clone()">clone</a>():Object</div>
+<div class="summaryTableDescription"> Clone the Matrix object.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#cond()">cond</a>():Number</div>
+<div class="summaryTableDescription"> Matrix condition (2 norm)
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#constructWithCopy()">constructWithCopy</a>(A:Array):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct a matrix from a copy of a 2-D array.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#copy()">copy</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Make a deep copy of a matrix
+   </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#det()">det</a>():Number</div>
+<div class="summaryTableDescription"> Matrix determinant
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#eig()">eig</a>():<a href="../lingalg/EigenvalueDecomposition.html">EigenvalueDecomposition</a>
+</div>
+<div class="summaryTableDescription"> Eigenvalue Decomposition
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#get()">get</a>(i:int, j:int):Number</div>
+<div class="summaryTableDescription"> Get a single element.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getArray()">getArray</a>():Array</div>
+<div class="summaryTableDescription"> Access the internal two-dimensional array.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getArrayCopy()">getArrayCopy</a>():Array</div>
+<div class="summaryTableDescription"> Copy the internal two-dimensional array.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getColumnDimension()">getColumnDimension</a>():int</div>
+<div class="summaryTableDescription"> Get column dimension.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getColumnPackedCopy()">getColumnPackedCopy</a>():Array</div>
+<div class="summaryTableDescription"> Make a one-dimensional column packed copy of the internal array.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getColumns()">getColumns</a>(... args):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">
+   Get columns of a matrix
+   </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getMatrixWithIndex()">getMatrixWithIndex</a>(r:Array, c:Array):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Get a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getMatrixWithRange()">getMatrixWithRange</a>(i0:int, i1:int, j0:int, j1:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Get a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getMatrixWithRowIndexColumnRange()">getMatrixWithRowIndexColumnRange</a>(r:Array, j0:int, j1:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Get a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getMatrixWithRowRangeColumnIndex()">getMatrixWithRowRangeColumnIndex</a>(i0:int, i1:int, c:Array):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Get a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getRowDimension()">getRowDimension</a>():int</div>
+<div class="summaryTableDescription"> Get row dimension.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getRowPackedCopy()">getRowPackedCopy</a>():Array</div>
+<div class="summaryTableDescription"> Make a one-dimensional row packed copy of the internal array.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getRows()">getRows</a>(... args):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">
+   Get rows of a matrix
+   </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#identity()">identity</a>(m:int, n:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Generate identity matrix
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#inverse()">inverse</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Matrix inverse or pseudoinverse
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#lu()">lu</a>():<a href="../lingalg/LUDecomposition.html">LUDecomposition</a>
+</div>
+<div class="summaryTableDescription"> LU Decomposition
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#makeFromArray()">makeFromArray</a>(A:Array):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct a matrix from a 2-D array.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#makeFromColumnPacked()">makeFromColumnPacked</a>(vals:Array, m:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct a matrix from a one-dimensional packed array
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#makeFromImage()">makeFromImage</a>(bmp:BitmapData):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct a matrix from an image, make sure the bitmap is in black and white first before passing to this function otherwise it will only record
+   the blue channel
+   </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#makeFromRowPacked()">makeFromRowPacked</a>(vals:Array, m:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct a matrix from a one-dimensional packed array
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#makeUsingArray()">makeUsingArray</a>(A:Array, m:int, n:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct a matrix quickly without checking arguments.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#makeWithCopy()">makeWithCopy</a>(m:int, n:int, s:Array):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Construct an m-by-n constant matrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#minus()">minus</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> C = A - B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#minusEquals()">minusEquals</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> A = A - B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#norm1()">norm1</a>():Number</div>
+<div class="summaryTableDescription"> One norm
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#norm2()">norm2</a>():Number</div>
+<div class="summaryTableDescription"> Two norm
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#normF()">normF</a>():Number</div>
+<div class="summaryTableDescription"> Frobenius norm
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#normInf()">normInf</a>():Number</div>
+<div class="summaryTableDescription"> Infinity norm
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#plus()">plus</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> C = A + B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#plusEquals()">plusEquals</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> A = A + B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#qr()">qr</a>():<a href="../lingalg/QRDecomposition.html">QRDecomposition</a>
+</div>
+<div class="summaryTableDescription"> QR Decomposition
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#random()">random</a>(m:int, n:int):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">[static] Generate matrix with random elements
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#rank()">rank</a>():int</div>
+<div class="summaryTableDescription"> Matrix rank
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#set()">set</a>(i:int, j:int, s:Number):void</div>
+<div class="summaryTableDescription"> Set a single element.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setArray()">setArray</a>(A:Array):void</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setMatrixWithIndex()">setMatrixWithIndex</a>(r:Array, c:Array, X:<a href="KMatrix.html">KMatrix</a>):void</div>
+<div class="summaryTableDescription"> Set a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setMatrixWithRange()">setMatrixWithRange</a>(i0:int, i1:int, j0:int, j1:int, X:<a href="KMatrix.html">KMatrix</a>):void</div>
+<div class="summaryTableDescription"> Set a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setMatrixWithRowIndexColumnRange()">setMatrixWithRowIndexColumnRange</a>(r:Array, j0:int, j1:int, X:<a href="KMatrix.html">KMatrix</a>):void</div>
+<div class="summaryTableDescription"> Set a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setMatrixWithRowRangeColumnIndex()">setMatrixWithRowRangeColumnIndex</a>(i0:int, i1:int, c:Array, X:<a href="KMatrix.html">KMatrix</a>):void</div>
+<div class="summaryTableDescription"> Set a submatrix.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#solve()">solve</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Solve A = B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#solveTranspose()">solveTranspose</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Solve X = B, which is also A'' = B'
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#svd()">svd</a>():<a href="../lingalg/SingularValueDecomposition.html">SingularValueDecomposition</a>
+</div>
+<div class="summaryTableDescription"> Singular Value Decomposition
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#times()">times</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Linear algebraic matrix multiplication, A B
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#timesEquals()">timesEquals</a>(s:Number):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Multiply a matrix by a scalar in place, A = s
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#timesScalar()">timesScalar</a>(s:Number):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Multiply a matrix by a scalar, C = s
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#toString()">toString</a>():String</div>
+<div class="summaryTableDescription"> prints this matrix </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#traceMatrix()">traceMatrix</a>():Number</div>
+<div class="summaryTableDescription"> Matrix trace.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#transpose()">transpose</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Matrix transpose.</div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#uminus()">uminus</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription">  Unary minus
+     </div>
+</td><td class="summaryTableOwnerCol">KMatrix</td>
+</tr>
+</table>
+</div>
+<script type="text/javascript" language="javascript">
+<!--
+showHideInherited();
+--></script>
+<div class="MainContent">
+<a name="propertyDetail"></a>
+<div class="detailSectionHeader">Property detail</div>
+<a name="A"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">A</td><td class="detailHeaderType">property</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var A:Array</code><p> Array for internal storage of elements.
+     </p></div>
+<a name="m"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">m</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var m:int</code><p> Row and column dimensions.
+     </p></div>
+<a name="n"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">n</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var n:int</code>
+</div>
+<a name="constructorDetail"></a>
+<div class="detailSectionHeader">Constructor detail</div>
+<a name="KMatrix()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">KMatrix</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function KMatrix(m:int, n:int)</code><p> Construct an m-by-n matrix of zeros.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">n</span>:int</code> &mdash;    Number of colums.
+   </td>
+</tr>
+</table>
+</div>
+<a name="methodDetail"></a>
+<div class="detailSectionHeader">Method detail</div>
+<a name="arrayLeftDivide()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">arrayLeftDivide</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function arrayLeftDivide(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Element-by-element left division, C = A.\B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A.\B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="arrayLeftDivideEquals()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">arrayLeftDivideEquals</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function arrayLeftDivideEquals(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Element-by-element left division in place, A = A.\B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A.\B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="arrayRightDivide()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">arrayRightDivide</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function arrayRightDivide(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Element-by-element right division, C = A./B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A./B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="arrayRightDivideEquals()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">arrayRightDivideEquals</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function arrayRightDivideEquals(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Element-by-element right division in place, A = A./B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A./B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="arrayTimes()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">arrayTimes</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function arrayTimes(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Element-by-element multiplication, C = A.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="arrayTimesEquals()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">arrayTimesEquals</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function arrayTimesEquals(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Element-by-element multiplication in place, A = A.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="chol()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">chol</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function chol():<a href="../lingalg/CholeskyDecomposition.html">CholeskyDecomposition</a></code><p> Cholesky Decomposition
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/CholeskyDecomposition.html">CholeskyDecomposition</a></code> &mdash; 
+                            CholeskyDecomposition
+     
+                        
+                     </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="CholeskyDecomposition.html" target="">CholeskyDecomposition</a>
+</div>
+</div>
+<a name="clone()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">clone</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function clone():Object</code><p> Clone the Matrix object.
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Object</code></td>
+</tr>
+</table>
+</div>
+<a name="cond()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">cond</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function cond():Number</code><p> Matrix condition (2 norm)
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;     ratio of largest to smallest singular value.
+   </td>
+</tr>
+</table>
+</div>
+<a name="constructWithCopy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">constructWithCopy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function constructWithCopy(A:Array):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct a matrix from a copy of a 2-D array.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">A</span>:Array</code> &mdash;    Two-dimensional array of doubles.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="copy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">copy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function copy():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Make a deep copy of a matrix
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="det()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">det</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function det():Number</code><p> Matrix determinant
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;     determinant
+   </td>
+</tr>
+</table>
+</div>
+<a name="eig()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">eig</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function eig():<a href="../lingalg/EigenvalueDecomposition.html">EigenvalueDecomposition</a></code><p> Eigenvalue Decomposition
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/EigenvalueDecomposition.html">EigenvalueDecomposition</a></code> &mdash; 
+                            EigenvalueDecomposition
+     
+                        
+                     </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="EigenvalueDecomposition.html" target="">EigenvalueDecomposition</a>
+</div>
+</div>
+<a name="get()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">get</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function get(i:int, j:int):Number</code><p> Get a single element.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">i</span>:int</code> &mdash;    Row index.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j</span>:int</code> &mdash;    Column index.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;     A(i,j)
+     </td>
+</tr>
+</table>
+</div>
+<a name="getArray()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getArray</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getArray():Array</code><p> Access the internal two-dimensional array.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Array</code> &mdash;     Pointer to the two-dimensional array of matrix elements.
+   </td>
+</tr>
+</table>
+</div>
+<a name="getArrayCopy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getArrayCopy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getArrayCopy():Array</code><p> Copy the internal two-dimensional array.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Array</code> &mdash;     Two-dimensional array copy of matrix elements.
+   </td>
+</tr>
+</table>
+</div>
+<a name="getColumnDimension()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getColumnDimension</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getColumnDimension():int</code><p> Get column dimension.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>int</code> &mdash;     n, the number of columns.
+   </td>
+</tr>
+</table>
+</div>
+<a name="getColumnPackedCopy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getColumnPackedCopy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getColumnPackedCopy():Array</code><p> Make a one-dimensional column packed copy of the internal array.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Array</code> &mdash;     Matrix elements packed in a one-dimensional array by columns.
+   </td>
+</tr>
+</table>
+</div>
+<a name="getColumns()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getColumns</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getColumns(... args):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p>
+   Get columns of a matrix
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code>... <span class="label">args</span></code> &mdash; the indices corresponding to the row numbers
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                        A(args, 0:end)
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getMatrixWithIndex()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getMatrixWithIndex</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getMatrixWithIndex(r:Array, c:Array):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Get a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">r</span>:Array</code> &mdash;    Array of row indices.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">c</span>:Array</code> &mdash;    Array of column indices.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A(r(:),c(:))
+     
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getMatrixWithRange()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getMatrixWithRange</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getMatrixWithRange(i0:int, i1:int, j0:int, j1:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Get a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">i0</span>:int</code> &mdash;   Initial row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">i1</span>:int</code> &mdash;   Final row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j0</span>:int</code> &mdash;   Initial column index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j1</span>:int</code> &mdash;   Final column index
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A(i0:i1,j0:j1)
+     
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getMatrixWithRowIndexColumnRange()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getMatrixWithRowIndexColumnRange</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getMatrixWithRowIndexColumnRange(r:Array, j0:int, j1:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Get a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">r</span>:Array</code> &mdash;    Array of row indices.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j0</span>:int</code> &mdash;   Initial column index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j1</span>:int</code> &mdash;   Final column index
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A(r(:),j0:j1)
+     
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getMatrixWithRowRangeColumnIndex()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getMatrixWithRowRangeColumnIndex</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getMatrixWithRowRangeColumnIndex(i0:int, i1:int, c:Array):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Get a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">i0</span>:int</code> &mdash;   Initial row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">i1</span>:int</code> &mdash;   Final row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">c</span>:Array</code> &mdash;    Array of column indices.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A(i0:i1,c(:))
+     
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getRowDimension()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getRowDimension</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getRowDimension():int</code><p> Get row dimension.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>int</code> &mdash;     m, the number of rows.
+   </td>
+</tr>
+</table>
+</div>
+<a name="getRowPackedCopy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getRowPackedCopy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getRowPackedCopy():Array</code><p> Make a one-dimensional row packed copy of the internal array.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Array</code> &mdash;     Matrix elements packed in a one-dimensional array by rows.
+   </td>
+</tr>
+</table>
+</div>
+<a name="getRows()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getRows</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getRows(... args):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p>
+   Get rows of a matrix
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code>... <span class="label">args</span></code> &mdash; the indices corresponding to the row numbers
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                        A(args, 0:end)
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="identity()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">identity</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function identity(m:int, n:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Generate identity matrix
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">n</span>:int</code> &mdash;    Number of colums.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            An m-by-n matrix with ones on the diagonal and zeros elsewhere.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="inverse()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">inverse</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function inverse():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Matrix inverse or pseudoinverse
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            inverse(A) if A is square, pseudoinverse otherwise.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="lu()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">lu</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function lu():<a href="../lingalg/LUDecomposition.html">LUDecomposition</a></code><p> LU Decomposition
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/LUDecomposition.html">LUDecomposition</a></code> &mdash; 
+                            LUDecomposition
+     
+                        
+                     </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="LUDecomposition.html" target="">LUDecomposition</a>
+</div>
+</div>
+<a name="makeFromArray()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">makeFromArray</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function makeFromArray(A:Array):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct a matrix from a 2-D array.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">A</span>:Array</code> &mdash;    Two-dimensional array of doubles.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../lingalg/KMatrix.html#constructWithCopy" target="">../lingalg/KMatrix.html#constructWithCopy</a>
+</div>
+</div>
+<a name="makeFromColumnPacked()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">makeFromColumnPacked</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function makeFromColumnPacked(vals:Array, m:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct a matrix from a one-dimensional packed array
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">vals</span>:Array</code> &mdash; One-dimensional array of doubles, packed by columns (ala Fortran).
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="makeFromImage()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">makeFromImage</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function makeFromImage(bmp:BitmapData):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct a matrix from an image, make sure the bitmap is in black and white first before passing to this function otherwise it will only record
+   the blue channel
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">bmp</span>:BitmapData</code> &mdash; bitmap to construct matrix from
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="makeFromRowPacked()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">makeFromRowPacked</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function makeFromRowPacked(vals:Array, m:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct a matrix from a one-dimensional packed array
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">vals</span>:Array</code> &mdash; One-dimensional array of doubles, packed by row (ala Fortran).
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="makeUsingArray()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">makeUsingArray</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function makeUsingArray(A:Array, m:int, n:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct a matrix quickly without checking arguments.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">A</span>:Array</code> &mdash;    Two-dimensional array of doubles.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">n</span>:int</code> &mdash;    Number of colums.
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="makeWithCopy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">makeWithCopy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function makeWithCopy(m:int, n:int, s:Array):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Construct an m-by-n constant matrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">n</span>:int</code> &mdash;    Number of colums.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">s</span>:Array</code> &mdash;    Fill the matrix with this scalar value.
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code></td>
+</tr>
+</table>
+</div>
+<a name="minus()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">minus</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function minus(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> C = A - B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A - B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="minusEquals()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">minusEquals</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function minusEquals(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> A = A - B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A - B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="norm1()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">norm1</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function norm1():Number</code><p> One norm
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;    maximum column sum.
+   </td>
+</tr>
+</table>
+</div>
+<a name="norm2()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">norm2</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function norm2():Number</code><p> Two norm
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;    maximum singular value.
+   </td>
+</tr>
+</table>
+</div>
+<a name="normF()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">normF</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function normF():Number</code><p> Frobenius norm
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;    sqrt of sum of squares of all elements.
+   </td>
+</tr>
+</table>
+</div>
+<a name="normInf()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">normInf</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function normInf():Number</code><p> Infinity norm
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;    maximum row sum.
+   </td>
+</tr>
+</table>
+</div>
+<a name="plus()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">plus</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function plus(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> C = A + B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A + B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="plusEquals()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">plusEquals</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function plusEquals(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> A = A + B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            A + B
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="qr()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">qr</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function qr():<a href="../lingalg/QRDecomposition.html">QRDecomposition</a></code><p> QR Decomposition
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/QRDecomposition.html">QRDecomposition</a></code> &mdash; 
+                            QRDecomposition
+     
+                        
+                     </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="QRDecomposition.html" target="">QRDecomposition</a>
+</div>
+</div>
+<a name="random()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">random</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function random(m:int, n:int):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Generate matrix with random elements
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">m</span>:int</code> &mdash;    Number of rows.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">n</span>:int</code> &mdash;    Number of colums.
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            An m-by-n matrix with uniformly distributed random elements.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="rank()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">rank</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function rank():int</code><p> Matrix rank
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>int</code> &mdash;     effective numerical rank, obtained from SVD.
+   </td>
+</tr>
+</table>
+</div>
+<a name="set()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">set</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function set(i:int, j:int, s:Number):void</code><p> Set a single element.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">i</span>:int</code> &mdash;    Row index.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j</span>:int</code> &mdash;    Column index.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">s</span>:Number</code> &mdash;    A(i,j).
+     </td>
+</tr>
+</table>
+</div>
+<a name="setArray()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setArray</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setArray(A:Array):void</code><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">A</span>:Array</code></td>
+</tr>
+</table>
+</div>
+<a name="setMatrixWithIndex()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setMatrixWithIndex</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setMatrixWithIndex(r:Array, c:Array, X:<a href="KMatrix.html">KMatrix</a>):void</code><p> Set a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">r</span>:Array</code> &mdash;    Array of row indices.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">c</span>:Array</code> &mdash;    Array of column indices.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">X</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    A(r(:),c(:))
+     </td>
+</tr>
+</table>
+</div>
+<a name="setMatrixWithRange()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setMatrixWithRange</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setMatrixWithRange(i0:int, i1:int, j0:int, j1:int, X:<a href="KMatrix.html">KMatrix</a>):void</code><p> Set a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">i0</span>:int</code> &mdash;   Initial row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">i1</span>:int</code> &mdash;   Final row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j0</span>:int</code> &mdash;   Initial column index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j1</span>:int</code> &mdash;   Final column index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">X</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    A(i0:i1,j0:j1)
+     </td>
+</tr>
+</table>
+</div>
+<a name="setMatrixWithRowIndexColumnRange()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setMatrixWithRowIndexColumnRange</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setMatrixWithRowIndexColumnRange(r:Array, j0:int, j1:int, X:<a href="KMatrix.html">KMatrix</a>):void</code><p> Set a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">r</span>:Array</code> &mdash;    Array of row indices.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j0</span>:int</code> &mdash;   Initial column index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">j1</span>:int</code> &mdash;   Final column index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">X</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    A(r(:),j0:j1)
+     </td>
+</tr>
+</table>
+</div>
+<a name="setMatrixWithRowRangeColumnIndex()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setMatrixWithRowRangeColumnIndex</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setMatrixWithRowRangeColumnIndex(i0:int, i1:int, c:Array, X:<a href="KMatrix.html">KMatrix</a>):void</code><p> Set a submatrix.
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">i0</span>:int</code> &mdash;   Initial row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">i1</span>:int</code> &mdash;   Final row index
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">c</span>:Array</code> &mdash;    Array of column indices.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">X</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    A(i0:i1,c(:))
+     </td>
+</tr>
+</table>
+</div>
+<a name="solve()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">solve</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function solve(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Solve A = B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    right hand side
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            solution if A is square, least squares solution otherwise
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="solveTranspose()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">solveTranspose</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function solveTranspose(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Solve X = B, which is also A'' = B'
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    right hand side
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            solution if A is square, least squares solution otherwise.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="svd()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">svd</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function svd():<a href="../lingalg/SingularValueDecomposition.html">SingularValueDecomposition</a></code><p> Singular Value Decomposition
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/SingularValueDecomposition.html">SingularValueDecomposition</a></code> &mdash; 
+                            SingularValueDecomposition
+     
+                        
+                     </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="SingularValueDecomposition.html" target="">SingularValueDecomposition</a>
+</div>
+</div>
+<a name="times()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">times</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function times(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Linear algebraic matrix multiplication, A B
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    another matrix
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            Matrix product, A B
+     
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="timesEquals()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">timesEquals</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function timesEquals(s:Number):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Multiply a matrix by a scalar in place, A = s
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">s</span>:Number</code> &mdash;    scalar
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            replace A by s
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="timesScalar()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">timesScalar</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function timesScalar(s:Number):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Multiply a matrix by a scalar, C = s
+     </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">s</span>:Number</code> &mdash;    scalar
+     </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            s
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="toString()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">toString</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function toString():String</code><p> prints this matrix </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>String</code></td>
+</tr>
+</table>
+</div>
+<a name="traceMatrix()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">traceMatrix</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function traceMatrix():Number</code><p> Matrix trace.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash;     sum of the diagonal elements.
+   </td>
+</tr>
+</table>
+</div>
+<a name="transpose()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">transpose</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function transpose():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Matrix transpose.
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                           A'
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="uminus()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">uminus</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function uminus():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p>  Unary minus
+     </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                           -A
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<br>
+<br>
+<hr>
+<br>
+<p></p>
+<center class="copyright"> 
+</center>
+</div>
+</body>
+</html>
+<!-- -->

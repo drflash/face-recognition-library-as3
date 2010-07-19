@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../../../../style.css" type="text/css" media="screen">
+<link rel="stylesheet" href="../../../../print.css" type="text/css" media="print">
+<meta content="QRDecomposition,com.karthik.math.lingalg.QRDecomposition,getH,getQ,getR,isFullRank,solve" name="keywords">
+<title>com.karthik.math.lingalg.QRDecomposition</title>
+</head>
+<body>
+<script type="text/javascript" language="javascript" src="../../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../../cookies.js"></script><script type="text/javascript" language="javascript">
+<!--
+				asdocTitle = 'QRDecomposition - API Documentation';
+				var baseRef = '../../../../';
+				window.onload = configPage;
+			--></script>
+<table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
+<tr>
+<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../all-classes.html')" href="../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../all-classes.html')" href="../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../index-list.html')" href="../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../index.html?com/karthik/math/lingalg/QRDecomposition.html&amp;com/karthik/math/lingalg/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../images/logo.jpg"></td>
+</tr>
+<tr class="titleTableRow2">
+<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;QRDecomposition</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#methodSummary">Methods</a></td>
+</tr>
+<tr class="titleTableRow3">
+<td colspan="2">&nbsp;</td>
+</tr>
+</table>
+<script type="text/javascript" language="javascript">
+<!--
+if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class QRDecomposition"); titleBar_setSubNav(false,false,false,false,false,false,true,false,false,false,false,false,false,false);}
+--></script>
+<div class="MainContent">
+<table cellspacing="0" cellpadding="0" class="classHeaderTable">
+<tr>
+<td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">com.karthik.math.lingalg</a></td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class QRDecomposition</td>
+</tr>
+</table>
+<p></p> QR Decomposition.
+<P>
+   For an m-by-n matrix A with m >= n, the QR decomposition is an m-by-n
+   orthogonal matrix Q and an n-by-n upper triangular matrix R so that
+   A = Q.
+<P>
+   The QR decompostion always exists, even if the matrix does not have
+   full rank, so the constructor will never fail.  The primary use of the
+   QR decomposition is in the least squares solution of nonsquare systems
+   of simultaneous linear equations.  This will fail if isFullRank()
+   returns false.
+<p></p>
+<br>
+<hr>
+</div>
+<a name="methodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Methods</div>
+<table id="summaryTableMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#QRDecomposition()">QRDecomposition</a>(A:<a href="KMatrix.html">KMatrix</a>)</div>
+<div class="summaryTableDescription"> QR Decomposition, computed by Householder reflections.</div>
+</td><td class="summaryTableOwnerCol">QRDecomposition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getH()">getH</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Return the Householder vectors
+   </div>
+</td><td class="summaryTableOwnerCol">QRDecomposition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getQ()">getQ</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Generate and return the (economy-sized) orthogonal factor
+   </div>
+</td><td class="summaryTableOwnerCol">QRDecomposition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getR()">getR</a>():<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Return the upper triangular factor
+   </div>
+</td><td class="summaryTableOwnerCol">QRDecomposition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#isFullRank()">isFullRank</a>():Boolean</div>
+<div class="summaryTableDescription"> Is the matrix full rank?
+   </div>
+</td><td class="summaryTableOwnerCol">QRDecomposition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#solve()">solve</a>(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a>
+</div>
+<div class="summaryTableDescription"> Least squares solution of A = B
+   </div>
+</td><td class="summaryTableOwnerCol">QRDecomposition</td>
+</tr>
+</table>
+</div>
+<script type="text/javascript" language="javascript">
+<!--
+showHideInherited();
+--></script>
+<div class="MainContent">
+<a name="constructorDetail"></a>
+<div class="detailSectionHeader">Constructor detail</div>
+<a name="QRDecomposition()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">QRDecomposition</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function QRDecomposition(A:<a href="KMatrix.html">KMatrix</a>)</code><p> QR Decomposition, computed by Householder reflections.
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">A</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    Rectangular matrix
+   </td>
+</tr>
+</table>
+</div>
+<a name="methodDetail"></a>
+<div class="detailSectionHeader">Method detail</div>
+<a name="getH()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getH</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getH():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Return the Householder vectors
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            Lower trapezoidal matrix whose columns define the reflections
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getQ()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getQ</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getQ():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Generate and return the (economy-sized) orthogonal factor
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            Q
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="getR()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getR</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getR():<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Return the upper triangular factor
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            R
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="isFullRank()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">isFullRank</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function isFullRank():Boolean</code><p> Is the matrix full rank?
+   </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Boolean</code> &mdash;     true if R, and hence A, has full rank.
+   </td>
+</tr>
+</table>
+</div>
+<a name="solve()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">solve</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function solve(B:<a href="KMatrix.html">KMatrix</a>):<a href="../lingalg/KMatrix.html">KMatrix</a></code><p> Least squares solution of A = B
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">B</span>:<a href="KMatrix.html">KMatrix</a></code> &mdash;    A Matrix with as many rows as A and any number of columns.
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../lingalg/KMatrix.html">KMatrix</a></code> &mdash; 
+                            X that minimizes the two norm of Q-B.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<br>
+<br>
+<hr>
+<br>
+<p></p>
+<center class="copyright"> 
+</center>
+</div>
+</body>
+</html>
+<!-- -->
