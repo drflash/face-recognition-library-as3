@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../../../../style.css" type="text/css" media="screen">
+<link rel="stylesheet" href="../../../../print.css" type="text/css" media="print">
+<meta content="FaceRecognition,com.oskarwicha.images.FaceRecognition.FaceRecognition,IDEAL_IMAGE_HEIGHT,IDEAL_IMAGE_WIDTH,loadTrainingFaces,probe,train" name="keywords">
+<title>com.oskarwicha.images.FaceRecognition.FaceRecognition</title>
+</head>
+<body>
+<script type="text/javascript" language="javascript" src="../../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../../cookies.js"></script><script type="text/javascript" language="javascript">
+<!--
+				asdocTitle = 'FaceRecognition - API Documentation';
+				var baseRef = '../../../../';
+				window.onload = configPage;
+			--></script>
+<table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
+<tr>
+<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../../all-classes.html')" href="../../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../all-classes.html')" href="../../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../../index-list.html')" href="../../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../../index.html?com/oskarwicha/images/FaceRecognition/FaceRecognition.html&amp;com/oskarwicha/images/FaceRecognition/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../../images/logo.jpg"></td>
+</tr>
+<tr class="titleTableRow2">
+<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;FaceRecognition</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#methodSummary">Methods</a>&nbsp;| <a href="#constantSummary">Constants</a></td>
+</tr>
+<tr class="titleTableRow3">
+<td colspan="2">&nbsp;</td>
+</tr>
+</table>
+<script type="text/javascript" language="javascript">
+<!--
+if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class FaceRecognition"); titleBar_setSubNav(true,false,false,false,false,false,true,false,false,false,false,false,false,false);}
+--></script>
+<div class="MainContent">
+<table cellspacing="0" cellpadding="0" class="classHeaderTable">
+<tr>
+<td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">com.oskarwicha.images.FaceRecognition</a></td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class FaceRecognition</td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">FaceRecognition <img class="inheritArrow" alt="Inheritance" title="Inheritance" src="../../../../images/inherit-arrow.gif"> flash.events.EventDispatcher</td>
+</tr>
+</table>
+<p></p>
+  Główna klasa w tym pakiecie. Używana jest do
+  rozpoczęcia ładowania zdjeć do treningu systemu
+  oraz samego treningu z wykorzystaniem tych zdjęć.
+  Za jej pośrednictwem inicjowany jest również proces
+  rozpoznawania nie sklasyfikowanej twarzy z wykorzystaniem
+  metody wykorzystującej koncepcje Eigenfaces.
+     <p></p>
+<br>
+<hr>
+</div>
+<a name="methodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Methods</div>
+<table id="summaryTableMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#FaceRecognition()">FaceRecognition</a>(target:IEventDispatcher = null)</div>
+<div class="summaryTableDescription">
+   Konstruktor
+      </div>
+</td><td class="summaryTableOwnerCol">FaceRecognition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#loadTrainingFaces()">loadTrainingFaces</a>(faceClasificationList:Array, faceUrlList:Array):void</div>
+<div class="summaryTableDescription">
+   Ładuje treningowy zestaw zdjęć twarzy i informacje o nich.</div>
+</td><td class="summaryTableOwnerCol">FaceRecognition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#probe()">probe</a>(f:<a href="Face.html">Face</a>, classthreshold:int = 5, numVecs:int = 10):<a href="../FaceRecognition/Face.html">Face</a>
+</div>
+<div class="summaryTableDescription">
+   Idefikuje twarz i zwraca obiekt klasy <code>Face</code>
+   przekazany jako parametr ale z zaktualizowanymi wartościami
+   <code>classification</code> oraz <code>description</code>.</div>
+</td><td class="summaryTableOwnerCol">FaceRecognition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#train()">train</a>(numVecs:int = 10):void</div>
+<div class="summaryTableDescription">
+   Trenuje system używając do tego celu załadowanych
+   zdjęć treningowych (do ładowania zdjeć można użyć
+   funkcji <code>this.loadTrainingFaces</code>) oraz
+   tekstów identyfikujących właścicieli tych twarzy.</div>
+</td><td class="summaryTableOwnerCol">FaceRecognition</td>
+</tr>
+</table>
+</div>
+<a name="constantSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Constants</div>
+<table id="summaryTableConstant" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Constant</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#IDEAL_IMAGE_HEIGHT">IDEAL_IMAGE_HEIGHT</a> : uint = 50<div class="summaryTableDescription">[static]
+   Wartość wysokości, do której skalowane są
+   wszystkie zdjecia twarzy.</div>
+</td><td class="summaryTableOwnerCol">FaceRecognition</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#IDEAL_IMAGE_WIDTH">IDEAL_IMAGE_WIDTH</a> : uint = 50<div class="summaryTableDescription">[static]
+   Wartość szerokokości, do której skalowane są
+   wszystkie zdjecia twarzy.</div>
+</td><td class="summaryTableOwnerCol">FaceRecognition</td>
+</tr>
+</table>
+</div>
+<script type="text/javascript" language="javascript">
+<!--
+showHideInherited();
+--></script>
+<div class="MainContent">
+<a name="constructorDetail"></a>
+<div class="detailSectionHeader">Constructor detail</div>
+<a name="FaceRecognition()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">FaceRecognition</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function FaceRecognition(target:IEventDispatcher = null)</code><p>
+   Konstruktor
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">target</span>:IEventDispatcher</code> (default = <code>null</code>)<code></code> &mdash; Nie trzeba podawać tego parametru
+      </td>
+</tr>
+</table>
+</div>
+<a name="methodDetail"></a>
+<div class="detailSectionHeader">Method detail</div>
+<a name="loadTrainingFaces()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">loadTrainingFaces</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function loadTrainingFaces(faceClasificationList:Array, faceUrlList:Array):void</code><p>
+   Ładuje treningowy zestaw zdjęć twarzy i informacje o nich.
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">faceClasificationList</span>:Array</code> &mdash; Tablica z obiektami
+   <code>String</code> zawierającymi tekst identyfikujący
+   właściciela twarzy
+   </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">faceUrlList</span>:Array</code> &mdash; Tablica z obiektami
+   <code>String</code> zawierającymi adresy url do zdjęć twarzy.
+      </td>
+</tr>
+</table>
+</div>
+<a name="probe()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">probe</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function probe(f:<a href="Face.html">Face</a>, classthreshold:int = 5, numVecs:int = 10):<a href="../FaceRecognition/Face.html">Face</a></code><p>
+   Idefikuje twarz i zwraca obiekt klasy <code>Face</code>
+   przekazany jako parametr ale z zaktualizowanymi wartościami
+   <code>classification</code> oraz <code>description</code>.
+   Identyfikator przypuszczalnego właściciela twarzy jest w
+   <code>classification</code>.
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">f</span>:<a href="Face.html">Face</a></code> &mdash; Obiekt ze zdjeciem twarzy, która ma zostać
+   poddana identyfikacji.
+   </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">classthreshold</span>:int</code> (default = <code>5</code>)<code></code> &mdash; Ilość obiektów klasy
+   <code>FeatureVector</code> używanych do porównania
+   (zestaw treningowy musi mieć conajmniej tyle zdjęć
+   co wartość podana w tym parametrze).
+   </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">numVecs</span>:int</code> (default = <code>10</code>)<code></code> &mdash; Ilość wektorów. Ta sama wartość musi
+   zostać podana przy wywołaniu funkcji
+   <code>this.train()</code>.
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="../FaceRecognition/Face.html">Face</a></code> &mdash; 
+                        Obiekt klasy <code>Face</code>
+   przekazany jako parametr ale z zaktualizowaną wartościa
+   <code>classification</code> oraz <code>description</code>.
+   Identyfikator przypuszczalnego właściciela twarzy jest w
+   <code>probe().classification</code>.
+   
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="train()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">train</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function train(numVecs:int = 10):void</code><p>
+   Trenuje system używając do tego celu załadowanych
+   zdjęć treningowych (do ładowania zdjeć można użyć
+   funkcji <code>this.loadTrainingFaces</code>) oraz
+   tekstów identyfikujących właścicieli tych twarzy.
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">numVecs</span>:int</code> (default = <code>10</code>)<code></code> &mdash; Ilość tworzonych wektorów. Ta sama
+   wartoś powinna zostać użyta dla tego parametru co
+   dla parametru w funkcji <code>this.probe()</code>.
+   </td>
+</tr>
+</table>
+</div>
+<a name="constantDetail"></a>
+<div class="detailSectionHeader">Constant detail</div>
+<a name="IDEAL_IMAGE_HEIGHT"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">IDEAL_IMAGE_HEIGHT</td><td class="detailHeaderType">constant</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static const IDEAL_IMAGE_HEIGHT:uint = 50</code><p>
+   Wartość wysokości, do której skalowane są
+   wszystkie zdjecia twarzy.
+   </p></div>
+<a name="IDEAL_IMAGE_WIDTH"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">IDEAL_IMAGE_WIDTH</td><td class="detailHeaderType">constant</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static const IDEAL_IMAGE_WIDTH:uint = 50</code><p>
+   Wartość szerokokości, do której skalowane są
+   wszystkie zdjecia twarzy.
+   </p></div>
+<br>
+<br>
+<hr>
+<br>
+<p></p>
+<center class="copyright"> 
+</center>
+</div>
+</body>
+</html>
+<!-- -->
