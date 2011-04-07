@@ -1,6 +1,6 @@
 package com.oskarwicha.images.FaceRecognition
 {
-	
+
 	/**
 	 * Klasa ta zawiera : </br>
 	 * Tablica <code>featureVector</code> za faktycznymi danymi wektora
@@ -14,14 +14,7 @@ package com.oskarwicha.images.FaceRecognition
 	 */
 	public class FeatureVector
 	{
-		
-		[ArrayElementType("Number")]
-		private var featureVector:Array;
-		
-		private var classification:int;
-		
-		private var face:Face;
-		
+
 		/**
 		 * Konstruktor
 		 *
@@ -30,53 +23,25 @@ package com.oskarwicha.images.FaceRecognition
 		{
 			//puste
 		}
-		
+
+		private var classification:int;
+
+		private var face:Face;
+
+		[ArrayElementType("Number")]
+		private var featureVector:Array;
+
 		/**
 		 * Liczba stałoprzecinkowa identyfikująca wektor.
 		 *
 		 * @return Klasyfikacja wektora
 		 *
 		 */
-		public function getClassification():int
+		internal function getClassification():int
 		{
 			return classification;
 		}
-		
-		/**
-		 * Ustawia klasyfikacje wektora.
-		 *
-		 * @param classification Klasyfikacja wektora.
-		 *
-		 */
-		public function setClassification(classification:int):void
-		{
-			this.classification = classification;
-		}
-		
-		/**
-		 * Tablica z danymi numerycznymi tworzącymi ten wektor.
-		 *
-		 * @return Tablica z obiektami typu <code>Number</code>.
-		 *
-		 */
-		public function getFeatureVector():Array
-		{
-			return featureVector;
-		}
-		
-		/**
-		 * Ustawia tablice z danymi numerycznymi tworzącymi ten
-		 * wektor.
-		 *
-		 * @param featureVector Tablica z obiektami typu
-		 * <code>Number</code>.
-		 *
-		 */
-		public function setFeatureVector(featureVector:Array):void
-		{
-			this.featureVector = featureVector;
-		}
-		
+
 		/**
 		 * Obiekt klasy <code>Face</code> używany do obliczenia
 		 * faktycznych danch tego wektora.
@@ -85,11 +50,33 @@ package com.oskarwicha.images.FaceRecognition
 		 * obiekcie <code>FeatureVector<code>.
 		 *
 		 */
-		public function getFace():Face
+		internal function getFace():Face
 		{
 			return face;
 		}
-		
+
+		/**
+		 * Tablica z danymi numerycznymi tworzącymi ten wektor.
+		 *
+		 * @return Tablica z obiektami typu <code>Number</code>.
+		 *
+		 */
+		internal function getFeatureVector():Array
+		{
+			return featureVector;
+		}
+
+		/**
+		 * Ustawia klasyfikacje wektora.
+		 *
+		 * @param classification Klasyfikacja wektora.
+		 *
+		 */
+		internal function setClassification(classification:int):void
+		{
+			this.classification = classification;
+		}
+
 		/**
 		 * Ustawia biekt klasy <code>Face</code> używany do
 		 * obliczenia faktycznych danch tego wektora.
@@ -97,9 +84,22 @@ package com.oskarwicha.images.FaceRecognition
 		 * @param face
 		 *
 		 */
-		public function setFace(face:Face):void
+		internal function setFace(face:Face):void
 		{
 			this.face = face;
+		}
+
+		/**
+		 * Ustawia tablice z danymi numerycznymi tworzącymi ten
+		 * wektor.
+		 *
+		 * @param featureVector Tablica z obiektami typu
+		 * <code>Number</code>.
+		 *
+		 */
+		internal function setFeatureVector(featureVector:Array):void
+		{
+			this.featureVector = featureVector;
 		}
 	}
 }
