@@ -5,7 +5,7 @@ package com.oskarwicha.images.FaceRecognition
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
-	
+
 	/**
 	 * Rzoszerza klase <code>Bitmap</code> poprzez dodanie funkcji
 	 * m.in. normalizującej obraz, zwracającej informacje o
@@ -28,10 +28,10 @@ package com.oskarwicha.images.FaceRecognition
 		{
 			var pixelSnapping:String = "auto";
 			var smoothing:Boolean = false;
-			
+
 			super(bitmapData, pixelSnapping, smoothing);
 		}
-		
+
 		/**
 		 * Zwraca tablice z wartościami jasności poszczególnych
 		 * pikseli.
@@ -42,15 +42,14 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function getImagePixels():Array
 		{
-			
+
 			var w:int = this.bitmapData.width;
 			var h:int = this.bitmapData.height;
 			var pixels:Array = new Array(w * h);
 			var pixelsBA:ByteArray = new ByteArray();
-			
-			pixelsBA =
-				this.bitmapData.getPixels(new Rectangle(0, 0, w, h));
-			
+
+			pixelsBA = this.bitmapData.getPixels(new Rectangle(0, 0, w, h));
+
 			// Prawda jesli piksele obrazu nie zostały pomyślnie
 			// załadowane.
 			if (pixelsBA.length == 0)
@@ -60,38 +59,55 @@ package com.oskarwicha.images.FaceRecognition
 				// pomyślnie załadowane
 				return new Array();
 			}
-			
+
 			var ret:Array = new Array(w * h);
 			var length:int = ret.length;
-			
+
 			pixelsBA.position = 0;
-			
+
 			for (var i:int = 0; i < length; i++)
 				ret[i] = getLuminosity(pixelsBA);
-			
+
 			return ret;
 		}
-		
-		private function getRed(pixel:uint):Number
+
+		// r = r/(r+g+b)  ... zastosowanie zwieksza skuteczność
+		// rozpoznawania
+		internal function normalize():void
 		{
-			return (pixel & (255 << 16)) >> 16;
+			var w:int = this.bitmapData.width;
+			var h:int = this.bitmapData.height;
+			var pixelsBA:ByteArray = this.bitmapData.getPixels(new Rectangle(0, 0, w, h));
+			var pixel:uint;
+			pixelsBA.position = 0;
+			//var pixelsBAsize:uint = pixelsBA.bytesAvailable;
+			var red:uint = 0;
+			var green:uint = 0;
+			var blue:uint = 0;
+
+			while (pixelsBA.bytesAvailable >= 4)
+			{
+				pixel = pixelsBA.readUnsignedInt();
+				red = (getRed(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)) << 16);
+				green = (getGreen(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)) << 8);
+				blue = (getBlue(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)));
+				pixel = red + green + blue;
+				// Ustawia pozycje zapisu na pozycje ostatniego odczytu.
+				pixelsBA.position -= 1;
+				pixelsBA.writeUnsignedInt(pixel);
+			}
 		}
-		
-		private function getGreen(pixel:uint):Number
-		{
-			return (pixel & (255 << 8)) >> 8;
-		}
-		
+
 		private function getBlue(pixel:uint):Number
 		{
 			return (pixel & 255);
 		}
-		
-		private function getRGBfromARGB(pixel:uint):Number
+
+		private function getGreen(pixel:uint):Number
 		{
-			return (pixel & 16777215);
+			return (pixel & (255 << 8)) >> 8;
 		}
-		
+
 		private function getLuminosity(byteArray:ByteArray):Number
 		{
 			var returnedValue:Number;
@@ -109,38 +125,15 @@ package com.oskarwicha.images.FaceRecognition
 			// Zwraca jasność piksela. 
 			return returnedValue;
 		}
-		
-		// r = r/(r+g+b)  ... zastosowanie zwieksza skuteczność
-		// rozpoznawania
-		public function normalize():void
+
+		private function getRGBfromARGB(pixel:uint):Number
 		{
-			var w:int = this.bitmapData.width;
-			var h:int = this.bitmapData.height;
-			var pixelsBA:ByteArray =
-				this.bitmapData.getPixels(new Rectangle(0, 0, w,
-				h));
-			var pixel:uint;
-			pixelsBA.position = 0;
-			var pixelsBAsize:uint = pixelsBA.bytesAvailable;
-			var red:uint = 0;
-			var green:uint = 0;
-			var blue:uint = 0;
-			
-			while (pixelsBA.position < pixelsBAsize)
-			{
-				pixel = pixelsBA.readUnsignedInt();
-				red =
-					(getRed(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)) << 16);
-				green =
-					(getGreen(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)) << 8);
-				blue =
-					(getBlue(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)));
-				pixel = red + green + blue;
-				// Ustawia pozycje zapisu na pozycje ostatniego odczytu.
-				pixelsBA.position -= 1;
-				pixelsBA.writeUnsignedInt(pixel);
-			}
+			return (pixel & 16777215);
 		}
-	
+
+		private function getRed(pixel:uint):Number
+		{
+			return (pixel & (255 << 16)) >> 16;
+		}
 	}
 }

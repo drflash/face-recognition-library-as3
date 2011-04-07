@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="jp.maaash.ObjectDetection.HaarCascadeLoader"/>
@@ -8,7 +8,7 @@
     <classEntry path="jp.maaash.ObjectDetection.ObjectDetectorEvent"/>
     <classEntry path="jp.maaash.ObjectDetection.HaarCascade"/>
     <classEntry path="com.oskarwicha.images.FaceRecognition.FeatureVector"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.DistanceMeasure"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.IDistanceMeasure"/>
     <classEntry path="com.karthik.math.lingalg.KMatrix"/>
     <classEntry path="com.karthik.math.lingalg.EigenvalueDecomposition"/>
     <classEntry path="com.oskarwicha.images.FaceDetection.FaceDetector"/>
@@ -34,6 +34,7 @@
     <classEntry path="com.oskarwicha.images.FaceRecognition.Events.FaceRecognitionEvent"/>
     <classEntry path="com.karthik.math.lingalg.Maths"/>
     <classEntry path="com.oskarwicha.images.FaceRecognition.FaceRecognition"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.EuclideanDistance"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
