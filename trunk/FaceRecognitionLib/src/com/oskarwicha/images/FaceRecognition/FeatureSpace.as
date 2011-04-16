@@ -159,8 +159,7 @@ package com.oskarwicha.images.FaceRecognition
 
 			const classificationsLength:uint = classifications.length;
 			var accm:Vector.<uint> = new Vector.<uint>(classificationsLength, true);
-			accm.length = classificationsLength;
-			accm.fixed = true;
+
 			for (i = 0; i < classificationsLength; ++i)
 				accm[i] = 0;
 
