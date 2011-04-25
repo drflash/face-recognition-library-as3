@@ -11,6 +11,7 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @author Oskar Wicha
 	 *
+	 * @flowerModelElementId _TpndIGglEeCqZchJBDddKw
 	 */
 	public class FeatureVector
 	{
@@ -28,8 +29,7 @@ package com.oskarwicha.images.FaceRecognition
 
 		private var face:Face;
 
-		[ArrayElementType("Number")]
-		private var featureVector:Array;
+		private var featureVector:Vector.<Number>;
 
 		/**
 		 * Liczba stałoprzecinkowa identyfikująca wektor.
@@ -61,7 +61,7 @@ package com.oskarwicha.images.FaceRecognition
 		 * @return Tablica z obiektami typu <code>Number</code>.
 		 *
 		 */
-		internal function getFeatureVector():Array
+		internal function getFeatureVector():Vector.<Number>
 		{
 			return featureVector;
 		}
@@ -97,7 +97,7 @@ package com.oskarwicha.images.FaceRecognition
 		 * <code>Number</code>.
 		 *
 		 */
-		internal function setFeatureVector(featureVector:Array):void
+		internal function setFeatureVector(featureVector:Vector.<Number>):void
 		{
 			this.featureVector = featureVector;
 		}

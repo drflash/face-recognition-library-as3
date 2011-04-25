@@ -9,6 +9,7 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @author Oskar Wicha
 	 *
+	 * @flowerModelElementId _TpbP4GglEeCqZchJBDddKw
 	 */
 	public class FeatureSpace
 	{
@@ -25,23 +26,21 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function FeatureSpace()
 		{
-			featureSpace = new Array();
-			classifications = new Array();
+			featureSpace = new Vector.<FeatureVector>();
+			classifications = new Vector.<String>();
 		}
 
-		[ArrayElementType("String")]
 		/**
-		 * Tablica z obiektami <code>String</code>
+		 * Wektor z obiektami <code>String</code>
 		 *
 		 */
-		private var classifications:Array;
+		private var classifications:Vector.<String>;
 
-		//[ArrayElementType("FeatureVector")]
 		/**
-		 * Tablica z obiektami <code>FeatureVectors<code>
+		 * Wektor z obiektami <code>FeatureVectors<code>
 		 *
 		 */
-		private var featureSpace:Array;
+		private var featureSpace:Vector.<FeatureVector>;
 
 		/**
 		 * Sortuje baze w zależności od odległości wektorów w bazie
@@ -52,7 +51,7 @@ package com.oskarwicha.images.FaceRecognition
 		 * @param obj Wektor utworzony dla twarzy poddanej rozpoznawaniu
 		 * @return Posorotowana tablica obiektów typu fd_pair
 		 */
-		public function orderByDistance(measure:IDistanceMeasure, obj:FeatureVector):Array
+		public function orderByDistance(measure:IDistanceMeasure, fv:FeatureVector):Array
 		{
 			var orderedList:Array = new Array();
 			if (getFeatureSpaceSize() < 1)
@@ -70,18 +69,19 @@ package com.oskarwicha.images.FaceRecognition
 			{
 				dp[i] = new di_pair();
 				dp[i].obj = featureSpace[i];
-				dp[i].dist = measure.DistanceBetween(obj, featureSpace[i]);
+				dp[i].dist = measure.DistanceBetween(fv, featureSpace[i]);
 			}
 
 			dp.sort(di_pair_compare);
 
-			for each (var dfp:di_pair in dp)
+			i = featureSpaceLength;
+			while (i--)
 			{
 				var fd:fd_pair = new fd_pair();
-				fd.face = dfp.obj.getFace();
-				fd.dist = dfp.dist;
-				orderedList.push(fd);
-					//trace(fd.dist);
+				fd.face = dp[i].obj.getFace();
+				fd.dist = dp[i].dist;
+				orderedList[i] = fd;
+					//trace(fd.dist + " -  " + fd.face.classification);
 			}
 
 			return orderedList;
@@ -94,7 +94,7 @@ package com.oskarwicha.images.FaceRecognition
 		 * @return rozmiar feature space
 		 *
 		 */
-		internal function getFeatureSpaceSize():int
+		internal function getFeatureSpaceSize():uint
 		{
 			return featureSpace.length;
 		}
@@ -110,20 +110,19 @@ package com.oskarwicha.images.FaceRecognition
 		 * obiekcie twarzy podanym jako pierwszy parametr.
 		 *
 		 */
-		internal function insertIntoDatabase(face:Face, featureVector:Array):void
+		internal final function insertIntoDatabase(face:Face, featureVector:Vector.<Number>):void
 		{
 			// Prawda jeśli tablica classifications nie zawiera
 			// takiego obiektu jak face.classification.
 			if (classifications.indexOf(face.classification) == -1)
-				classifications.push(face.classification);
+				classifications[classifications.length] = face.classification;
 
 			var clas:int = classifications.indexOf(face.classification);
 			var obj:FeatureVector = new FeatureVector();
 			obj.setClassification(clas);
 			obj.setFace(face);
 			obj.setFeatureVector(featureVector);
-
-			featureSpace.push(obj);
+			featureSpace[featureSpace.length] = obj;
 		}
 
 		/**
@@ -140,7 +139,7 @@ package com.oskarwicha.images.FaceRecognition
 		 * poddanej rozpoznawaniu.
 		 *
 		 */
-		internal function knn(measure:IDistanceMeasure, obj:FeatureVector, nn:int):String
+		internal final function knn(measure:IDistanceMeasure, obj:FeatureVector, nn:int):String
 		{
 			if (getFeatureSpaceSize() < 1)
 				return null;
@@ -182,12 +181,9 @@ package com.oskarwicha.images.FaceRecognition
 		}
 
 		// Służy do porównaniea dwóch obiektów klasy "di_pair"
-		private function di_pair_compare(arg0:Object, arg1:Object):int
+		private final function di_pair_compare(arg0:di_pair, arg1:di_pair):int
 		{
-			var a:di_pair = di_pair(arg0);
-			var b:di_pair = di_pair(arg1);
-
-			return int(a.dist) - int(b.dist);
+			return int(int(arg0.dist) - int(arg1.dist));
 		}
 	}
 
@@ -200,7 +196,6 @@ import com.oskarwicha.images.FaceRecognition.FeatureVector;
 class di_pair
 {
 	public var dist:Number;
-
 	public var obj:FeatureVector;
 }
 ;

@@ -8,9 +8,10 @@ package com.oskarwicha.images.FaceRecognition.Events
 	 * Klasa zdarzenia wysyłanego przez obiekty klasy
 	 * <code>Face</code>, gdy zdjęcie twarzy zostanie
 	 * pomyślnie załadowane przez obiekt.
-	 *
+	 * 
 	 * @author Oskar Wicha
-	 *
+	 * 
+	 * @flowerModelElementId _TlH-sGglEeCqZchJBDddKw
 	 */
 	public class FaceEvent extends Event
 	{
@@ -34,7 +35,7 @@ package com.oskarwicha.images.FaceRecognition.Events
 		 * Konstruktor klasy.
 		 * Używany do stworzenia obiektu zdażenia (event'u)
 		 * zazwyczaj przed jego wysłaniem.
-		 *
+		 * 
 		 * @param type Typ zdarzenia, które ma zostać utworzone i
 		 * jest zdefiniowane w tej klasie
 		 * @param bubbles Zmienna kontrolująca sposób propagacji
@@ -42,10 +43,10 @@ package com.oskarwicha.images.FaceRecognition.Events
 		 * @param cancelable Decyduje czy jeden z obiektów
 		 * odbierających zdarzenie może je powstrzymać przed
 		 * dalszą propagacją
-		 *
+		 * 
+		 * @flowerModelElementId _TlMQIWglEeCqZchJBDddKw
 		 */
-		public function FaceEvent(type:String, bubbles:Boolean =
-			false, cancelable:Boolean = false)
+		public function FaceEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			// Używa konstruktora klasy, od której dziedziczy czyli
 			// flash.events.Event w celu stworzenia podstawowego obiektu
