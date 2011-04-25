@@ -1,6 +1,9 @@
 package com.oskarwicha.images.FaceRecognition
 {
 
+	/**
+	 * @flowerModelElementId _TmCksGglEeCqZchJBDddKw
+	 */
 	internal final class EuclideanDistance implements IDistanceMeasure
 	{
 		public function EuclideanDistance()
@@ -20,12 +23,11 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function DistanceBetween(fv1:FeatureVector, fv2:FeatureVector):Number
 		{
-			var num:int = fv1.getFeatureVector().length;
-			num = (fv2.getFeatureVector().length > num ? fv2.getFeatureVector().length : num);
+			var num:int = (fv2.getFeatureVector().length > fv1.getFeatureVector().length ? fv2.getFeatureVector().length : fv1.getFeatureVector().length);
 			var dist:Number = 0;
-			for (var i:int = 0; i < num; i++)
+			for (var i:int = 0; i < num; ++i)
 			{
-				dist += ((fv1.getFeatureVector()[i] - fv2.getFeatureVector()[i]) * (fv1.getFeatureVector()[i] - fv2.getFeatureVector()[i]));
+				dist += Number((fv1.getFeatureVector()[i] - fv2.getFeatureVector()[i]) * (fv1.getFeatureVector()[i] - fv2.getFeatureVector()[i]));
 			}
 			//trace("Odległość miedzy wektorami = " + Math.sqrt(dist));
 			return Math.sqrt(dist);

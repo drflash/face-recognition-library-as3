@@ -4,9 +4,10 @@ package com.oskarwicha.images.FaceRecognition
 	/**
 	 * Klasa służy do obsługi informacji o postępie w treningu
 	 * systemu.
-	 *
+	 * 
 	 * @author Oskar Wicha
-	 *
+	 * 
+	 * @flowerModelElementId _Tqow0GglEeCqZchJBDddKw
 	 */
 	internal class ProgressTracker
 	{

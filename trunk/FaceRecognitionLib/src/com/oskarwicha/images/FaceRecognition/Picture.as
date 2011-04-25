@@ -13,9 +13,11 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @author Oskar Wicha
 	 *
+	 * @flowerModelElementId _TqiDIGglEeCqZchJBDddKw
 	 */
 	public class Picture extends Bitmap
 	{
+
 		/**
 		 * Konstruktor
 		 *
@@ -40,100 +42,92 @@ package com.oskarwicha.images.FaceRecognition
 		 * pikseli obrazu. Wartości zapisane są w obiektach
 		 * klasy <code>Number</code>
 		 */
-		public function getImagePixels():Array
+		public function getImagePixels():Vector.<Number>
 		{
-
-			var w:int = this.bitmapData.width;
-			var h:int = this.bitmapData.height;
-			var pixels:Array = new Array(w * h);
-			var pixelsBA:ByteArray = new ByteArray();
-
-			pixelsBA = this.bitmapData.getPixels(new Rectangle(0, 0, w, h));
+			var pixelsVector:Vector.<uint> = this.bitmapData.getVector(this.bitmapData.rect);
 
 			// Prawda jesli piksele obrazu nie zostały pomyślnie
 			// załadowane.
-			if (pixelsBA.length == 0)
+			if (pixelsVector.length == 0)
 			{
 				trace("Uwaga: Brak pixeli w obiekcie.");
 				// Zwraca pustą tablice jeśli piksele nie zostały
 				// pomyślnie załadowane
-				return new Array();
+				return new Vector.<Number>();
 			}
 
-			var ret:Array = new Array(w * h);
-			var length:int = ret.length;
-
-			pixelsBA.position = 0;
-
-			for (var i:int = 0; i < length; i++)
-				ret[i] = getLuminosity(pixelsBA);
-
-			return ret;
+			return getLuminosity(pixelsVector);
 		}
 
-		// r = r/(r+g+b)  ... zastosowanie zwieksza skuteczność
+		// r = r*(r/(r+g+b))  ... zastosowanie zwieksza skuteczność
 		// rozpoznawania
 		internal function normalize():void
 		{
-			var w:int = this.bitmapData.width;
-			var h:int = this.bitmapData.height;
-			var pixelsBA:ByteArray = this.bitmapData.getPixels(new Rectangle(0, 0, w, h));
+			var pixelsVector:Vector.<uint> = this.bitmapData.getVector(this.bitmapData.rect);
+			pixelsVector.fixed = true;
 			var pixel:uint;
-			pixelsBA.position = 0;
-			//var pixelsBAsize:uint = pixelsBA.bytesAvailable;
-			var red:uint = 0;
-			var green:uint = 0;
-			var blue:uint = 0;
+			var red:uint;
+			var green:uint;
+			var blue:uint;
+			var sum:uint;
+			var pixelsNormalizedVector:Vector.<uint> = new Vector.<uint>(pixelsVector.length, true);
 
-			while (pixelsBA.bytesAvailable >= 4)
+			var i:int = pixelsVector.length;
+			while (i--)
 			{
-				pixel = pixelsBA.readUnsignedInt();
-				red = (getRed(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)) << 16);
-				green = (getGreen(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)) << 8);
-				blue = (getBlue(pixel) / (getRed(pixel) + getGreen(pixel) + getBlue(pixel)));
-				pixel = red + green + blue;
-				// Ustawia pozycje zapisu na pozycje ostatniego odczytu.
-				pixelsBA.position -= 1;
-				pixelsBA.writeUnsignedInt(pixel);
+				pixel = pixelsVector[i];
+				red = getRed(uint(pixel));
+				green = getGreen(uint(pixel));
+				blue = getBlue(uint(pixel));
+				sum = red + green + blue;
+
+				red = uint((red / sum) * red);
+				green = uint((green / sum) * green);
+				blue = uint((blue / sum) * blue);
+
+				pixelsNormalizedVector[i] = uint((0xFF000000) | (red << 0x10) | (green << 0x08) | blue); //toARGB(uint(0xFF), red, green, blue);
 			}
+
+			this.bitmapData.setVector(this.bitmapData.rect, pixelsNormalizedVector);
 		}
 
-		private function getBlue(pixel:uint):Number
+		private final function getBlue(pixel:uint):uint
 		{
-			return (pixel & 255);
+			return uint(pixel & 0x000000FF);
 		}
 
-		private function getGreen(pixel:uint):Number
+		private final function getGreen(pixel:uint):uint
 		{
-			return (pixel & (255 << 8)) >> 8;
+			return uint((pixel & 0x0000FF00) >> 0x08); //(pixel & (255 << 8)) >> 8;
 		}
 
-		private function getLuminosity(byteArray:ByteArray):Number
+		private final function getLuminosity(pixelsVector:Vector.<uint>):Vector.<Number>
 		{
-			var returnedValue:Number;
-			var pixel:uint = byteArray.readUnsignedInt();
-			// Kolejne 3 linie kodu odczytują poziomy jasności
-			// trzech podstawowych kolorów: czerwonego,
-			// zielonego oraz niebieskiego.
-			returnedValue = getRed(pixel);
-			returnedValue += getGreen(pixel);
-			returnedValue += getBlue(pixel);
-			// Zsumowana wartość tych barw składowych
-			// jest dzielona przez ich ilość w celu otrzymania
-			// jasności piksela.
-			returnedValue /= 3.0;
+			var pixel:uint;
+			var returnedVector:Vector.<Number> = new Vector.<Number>(pixelsVector.length, true);
+
+			var i:int = pixelsVector.length;
+			while (i--)
+			{
+				pixel = pixelsVector[i];
+				// To samo co returnedVector[i] = (getRed(pixel) + getGreen(pixel) + getBlue(pixel))/3;
+				// Zsumowana wartość tych barw składowych
+				// jest dzielona przez ich ilość w celu otrzymania
+				// jasności piksela.
+				returnedVector[i] = Number((uint((pixel & 0x00FF0000) >> 0x10) + uint((pixel & 0x0000FF00) >> 0x08) + uint(pixel & 0x000000FF)) / uint(3));
+			}
 			// Zwraca jasność piksela. 
-			return returnedValue;
+			return returnedVector;
 		}
 
-		private function getRGBfromARGB(pixel:uint):Number
+		private final function getRGBfromARGB(pixel:uint):uint
 		{
-			return (pixel & 16777215);
+			return uint(pixel & 0x00FFFFFF);
 		}
 
-		private function getRed(pixel:uint):Number
+		private final function getRed(pixel:uint):uint
 		{
-			return (pixel & (255 << 16)) >> 16;
+			return uint((pixel & 0x00FF0000) >> 0x10); //(pixel & (255 << 16)) >> 16;
 		}
 	}
 }

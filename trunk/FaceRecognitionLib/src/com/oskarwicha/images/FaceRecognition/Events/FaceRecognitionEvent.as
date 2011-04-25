@@ -6,9 +6,10 @@ package com.oskarwicha.images.FaceRecognition.Events
 	 * Klasa definiująca zdarzeńa wysyłane przez obiekty klasy
 	 * <code>FaceRecognition</code> gdy zakonczy się proces treningu
 	 * gdy zakonczy sie rozpoznawanie twarzy i gdy   .
-	 *
+	 * 
 	 * @author OscylO
-	 *
+	 * 
+	 * @flowerModelElementId _TlRvsGglEeCqZchJBDddKw
 	 */
 	public class FaceRecognitionEvent extends Event
 	{

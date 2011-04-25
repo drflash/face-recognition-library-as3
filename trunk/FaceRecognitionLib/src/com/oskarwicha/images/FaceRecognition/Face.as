@@ -20,6 +20,7 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @author Oskar Wicha
 	 *
+	 * @flowerModelElementId _Togp4GglEeCqZchJBDddKw
 	 */
 	public class Face extends EventDispatcher
 	{

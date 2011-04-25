@@ -17,6 +17,7 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 *  @author Oskar Wicha
 	 *
+	 * @flowerModelElementId _To65kGglEeCqZchJBDddKw
 	 */
 	public class FaceRecognition extends EventDispatcher
 	{
@@ -48,7 +49,7 @@ package com.oskarwicha.images.FaceRecognition
 		private var ef:EigenFaceGen = new EigenFaceGen();
 
 		//[ArrayElementType("Face")]
-		private var facesArray:Array = new Array();
+		private var facesVector:Vector.<Face> = new Vector.<Face>();
 
 		private var featureSpace:FeatureSpace = new FeatureSpace();
 
@@ -86,8 +87,8 @@ package com.oskarwicha.images.FaceRecognition
 					var face:Face = new Face(faceUrl);
 					face.classification = faceClasification;
 					face.description = "Twarz w zestawie treningowym.";
-					facesArray.push(face);
-					(facesArray[int(facesArray.length - 1)] as Face).addEventListener(FaceEvent.FACE_LOADED, onTrainingFaceLoaded);
+					facesVector.push(face);
+					(facesVector[int(facesVector.length - 1)] as Face).addEventListener(FaceEvent.FACE_LOADED, onTrainingFaceLoaded);
 				}
 			}
 			else
@@ -124,12 +125,12 @@ package com.oskarwicha.images.FaceRecognition
 				return null;
 
 			//	[ArrayElementType("Number")]
-			var rslt:Array = ef.getEigenFaces(f.picture, numVecs);
+			var rslt:Vector.<Number> = ef.getEigenFaces(f.picture, numVecs);
 			var fv:FeatureVector = new FeatureVector();
 			fv.setFeatureVector(rslt);
 
 			//	[ArrayElementType("Number")]
-			var fvtest:Array = fv.getFeatureVector();
+			var fvtest:Vector.<Number> = fv.getFeatureVector();
 			var classification:String = featureSpace.knn(FeatureSpace.EUCLIDEAN_DISTANCE, fv, classthreshold);
 			f.classification = classification;
 			f.description = "Twarz do rozpoznania.";
@@ -153,7 +154,7 @@ package com.oskarwicha.images.FaceRecognition
 		*/
 		public function returnDistancesToTrainingFaces(f:Face, numVecs:int = 10):Array
 		{
-			var rslt:Array = ef.getEigenFaces(f.picture, numVecs);
+			var rslt:Vector.<Number> = ef.getEigenFaces(f.picture, numVecs);
 			var fv:FeatureVector = new FeatureVector();
 			fv.setFeatureVector(rslt);
 			return featureSpace.orderByDistance(FeatureSpace.EUCLIDEAN_DISTANCE, fv);
@@ -172,14 +173,14 @@ package com.oskarwicha.images.FaceRecognition
 		public function train(numVecs:int = 10):void
 		{
 			trace("Trenuje ...");
-			ef.processTrainingSet(facesArray, new ProgressTracker());
-			var facesArrayLength:uint = facesArray.length;
+			ef.processTrainingSet(facesVector, new ProgressTracker());
+			var facesArrayLength:uint = facesVector.length;
 			var i:uint = 0;
 			var f:Face;
 			while (i < facesArrayLength)
 			{
-				f = facesArray[i] as Face;
-				var featureVectors:Array = ef.getEigenFaces(f.picture, numVecs);
+				f = facesVector[i] as Face;
+				var featureVectors:Vector.<Number> = ef.getEigenFaces(f.picture, numVecs);
 				//trace(featureVectors);
 				featureSpace.insertIntoDatabase(f, featureVectors);
 				++i;
@@ -192,7 +193,7 @@ package com.oskarwicha.images.FaceRecognition
 		private function onTrainingFaceLoaded(e:FaceEvent):void
 		{
 			loadedTrainingFacesCounter++;
-			if (facesArray.length == loadedTrainingFacesCounter)
+			if (facesVector.length == loadedTrainingFacesCounter)
 			{
 				var ev:Event = new Event(FaceRecognitionEvent.LOADED_TRAINING_FACES);
 				dispatchEvent(ev);
