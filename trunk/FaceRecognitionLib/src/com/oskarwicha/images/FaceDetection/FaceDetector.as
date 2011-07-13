@@ -69,7 +69,7 @@ package com.oskarwicha.images.FaceDetection
 		{
 			_cropedFace = value;
 			//trace("Wysłano zdarzenie : " + FaceDetectorEvent.FACE_CROPED);
-			dispatchEvent(new Event(FaceDetectorEvent.FACE_CROPED));
+			dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPED));
 		}
 
 		/**
@@ -160,7 +160,7 @@ package com.oskarwicha.images.FaceDetection
 				}
 				if (e.rects.length == 0)
 				{
-					dispatchEvent(new Event(FaceDetectorEvent.NO_FACES_DETECTED));
+					dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.NO_FACES_DETECTED));
 						//trace("Wysłano zdarzenie : " + FaceDetectorEvent.NO_FACES_DETECTED);
 				}
 				;
