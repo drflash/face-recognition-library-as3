@@ -23,14 +23,26 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function DistanceBetween(fv1:FeatureVector, fv2:FeatureVector):Number
 		{
-			var num:int = (fv2.getFeatureVector().length > fv1.getFeatureVector().length ? fv2.getFeatureVector().length : fv1.getFeatureVector().length);
-			var dist:Number = 0;
-			for (var i:int = 0; i < num; ++i)
+			var fv1Vector:Vector.<Number> = fv1.getFeatureVector();
+			var fv2Vector:Vector.<Number> = fv2.getFeatureVector();
+			var fv1VectorLength:int = fv1Vector.length;
+			var fv2VectorLength:int = fv2Vector.length;
+
+			var num:uint = fv1VectorLength ^ ((fv1VectorLength ^ fv2VectorLength) & ~(int(fv1VectorLength < fv2VectorLength) + 1)); //assigns bigger one
+
+			var fv1fv2diff:Number;
+			var dist:Number = 0.0;
+			for (var i:uint = 0; i < num; ++i)
 			{
-				dist += Number((fv1.getFeatureVector()[i] - fv2.getFeatureVector()[i]) * (fv1.getFeatureVector()[i] - fv2.getFeatureVector()[i]));
+				fv1fv2diff = fv1Vector[i] - fv2Vector[i];
+				dist += (fv1fv2diff * fv1fv2diff);
 			}
 			//trace("Odległość miedzy wektorami = " + Math.sqrt(dist));
-			return Math.sqrt(dist);
+
+			//the neighbor with the smallest distance also has the 
+			//smallest squared distance, so we can save some computation
+			//time by returning squared values
+			return dist;
 		}
 	}
 }

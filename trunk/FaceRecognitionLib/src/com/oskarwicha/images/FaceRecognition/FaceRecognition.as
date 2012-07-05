@@ -48,7 +48,6 @@ package com.oskarwicha.images.FaceRecognition
 
 		private var ef:EigenFaceGen = new EigenFaceGen();
 
-		//[ArrayElementType("Face")]
 		private var facesVector:Vector.<Face> = new Vector.<Face>();
 
 		private var featureSpace:FeatureSpace = new FeatureSpace();
@@ -56,6 +55,12 @@ package com.oskarwicha.images.FaceRecognition
 		// Zmienna używana żeby wiadome było kiedy wysłać
 		// zdarzenie "FaceRecognition_LoadedTrainingFaces".
 		private var loadedTrainingFacesCounter:uint;
+
+		public function loadTrainedData():void
+		{
+
+
+		}
 
 		/**
 		 * Ładuje treningowy zestaw zdjęć twarzy i informacje o nich.
@@ -65,9 +70,10 @@ package com.oskarwicha.images.FaceRecognition
 		 * właściciela twarzy
 		 * @param faceUrlList Tablica z obiektami
 		 * <code>String</code> zawierającymi adresy url do zdjęć twarzy.
+		 * @exception  IllegalArgumentException Vectors faceClasificationList and faceUrlList lengths must agree.
 		 *
 		 */
-		public function loadTrainingFaces(faceClasificationList:Array, faceUrlList:Array):void
+		public function loadTrainingFaces(faceClasificationList:Vector.<String>, faceUrlList:Vector.<String>):void
 		{
 			var amountOfFacesToBeLoaded:uint = 0;
 
@@ -78,22 +84,19 @@ package com.oskarwicha.images.FaceRecognition
 			{
 				amountOfFacesToBeLoaded = faceUrlList.length;
 
-				for (var i:uint = 0; i < amountOfFacesToBeLoaded; i++)
+				for (var i:uint = 0; i < amountOfFacesToBeLoaded; ++i)
 				{
-
-					var faceUrl:String = faceUrlList[i] as String;
-					var faceClasification:String = faceClasificationList[i] as String;
-					//trace("Klasyfikacja twarzy: " + faceClasification + " adres zdjęcia: " + faceUrl);
-					var face:Face = new Face(faceUrl);
-					face.classification = faceClasification;
+					//trace("Klasyfikacja twarzy: " + faceClasificationList[i] + " adres zdjęcia: " + faceUrlList[i]); //test
+					var face:Face = new Face(faceUrlList[i]);
+					face.classification = faceClasificationList[i];
 					face.description = "Twarz w zestawie treningowym.";
-					facesVector.push(face);
-					(facesVector[int(facesVector.length - 1)] as Face).addEventListener(FaceEvent.FACE_LOADED, onTrainingFaceLoaded);
+					facesVector[facesVector.length] = face;
+					facesVector[uint(facesVector.length - 1)].addEventListener(FaceEvent.FACE_LOADED, onTrainingFaceLoaded);
 				}
 			}
 			else
 			{
-				trace("Error: Tablice faceClasificationList oraz faceUrlList nie mają tej samej długości.");
+				throw new Error("Vectors faceClasificationList and faceUrlList lengths must agree.");
 			}
 		}
 
@@ -119,22 +122,20 @@ package com.oskarwicha.images.FaceRecognition
 		 * Identyfikator przypuszczalnego właściciela twarzy jest w
 		 * <code>probe().classification</code>.
 		 */
-		public function probe(f:Face, classthreshold:int = 5, numVecs:int = 10):Face
+		public function probe(f:Face, classThreshold:int = 5, numVecs:int = 10):Face
 		{
 			if (!f || !ef)
 				return null;
 
-			//	[ArrayElementType("Number")]
 			var rslt:Vector.<Number> = ef.getEigenFaces(f.picture, numVecs);
 			var fv:FeatureVector = new FeatureVector();
 			fv.setFeatureVector(rslt);
 
-			//	[ArrayElementType("Number")]
 			var fvtest:Vector.<Number> = fv.getFeatureVector();
-			var classification:String = featureSpace.knn(FeatureSpace.EUCLIDEAN_DISTANCE, fv, classthreshold);
+			var classification:String = featureSpace.knn(FeatureSpace.EUCLIDEAN_DISTANCE, fv, classThreshold);
 			f.classification = classification;
 			f.description = "Twarz do rozpoznania.";
-			trace("Twarz zidentyfikowana jako: " + classification);
+			//trace("Twarz zidentyfikowana jako: " + classification); //test
 			var ev:FaceRecognitionEvent = new FaceRecognitionEvent(FaceRecognitionEvent.PROBED);
 			ev.classification = classification;
 			dispatchEvent(ev);
@@ -160,6 +161,11 @@ package com.oskarwicha.images.FaceRecognition
 			return featureSpace.orderByDistance(FeatureSpace.EUCLIDEAN_DISTANCE, fv);
 		}
 
+		public function saveTrainedData():void
+		{
+			//trace(this.toString());
+		}
+
 		/**
 		 * Trenuje system używając do tego celu załadowanych
 		 * zdjęć treningowych (do ładowania zdjeć można użyć
@@ -172,31 +178,28 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function train(numVecs:int = 10):void
 		{
-			trace("Trenuje ...");
+			trace("Trenuje ..."); //test
 			ef.processTrainingSet(facesVector, new ProgressTracker());
 			var facesArrayLength:uint = facesVector.length;
 			var i:uint = 0;
 			var f:Face;
 			while (i < facesArrayLength)
 			{
-				f = facesVector[i] as Face;
-				var featureVectors:Vector.<Number> = ef.getEigenFaces(f.picture, numVecs);
-				//trace(featureVectors);
-				featureSpace.insertIntoDatabase(f, featureVectors);
+				f = facesVector[i];
+				featureSpace.insertIntoDatabase(f, ef.getEigenFaces(f.picture, numVecs));
 				++i;
 			}
-			trace("Trening zakończony");
+			trace("Trening zakończony"); //test
 			var ev:FaceRecognitionEvent = new FaceRecognitionEvent(FaceRecognitionEvent.TRAINED);
 			dispatchEvent(ev);
 		}
 
 		private function onTrainingFaceLoaded(e:FaceEvent):void
 		{
-			loadedTrainingFacesCounter++;
+			++loadedTrainingFacesCounter;
 			if (facesVector.length == loadedTrainingFacesCounter)
 			{
-				var ev:Event = new Event(FaceRecognitionEvent.LOADED_TRAINING_FACES);
-				dispatchEvent(ev);
+				dispatchEvent(new Event(FaceRecognitionEvent.LOADED_TRAINING_FACES));
 			}
 		}
 	}

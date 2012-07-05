@@ -118,7 +118,7 @@ package com.oskarwicha.images.FaceRecognition
 			{
 				trace("Uwaga: Twarz nie znaleziona na zdjęciu");
 			});
-			faceDetector.addEventListener(FaceDetectorEvent.FACE_CROPED, function(e:Event):void
+			faceDetector.addEventListener(FaceDetectorEvent.FACE_CROPPED, function(e:Event):void
 			{
 				destination = faceDetector.cropedFace;
 				trace("Sukces: Twarz znaleziona i wykadrowana");

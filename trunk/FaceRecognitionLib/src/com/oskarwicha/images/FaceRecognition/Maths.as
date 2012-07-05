@@ -36,6 +36,7 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public static function abs(value:Number):Number
 		{
+			//return value < 0.0 ? -value : value;
 			return value * (1.0 - (int(value < 0.0) << 1));
 		}
 
@@ -56,7 +57,7 @@ package com.oskarwicha.images.FaceRecognition
 			}
 			else
 			{
-				r = 0.0;
+				return 0.0;
 			}
 			return r;
 		}
@@ -72,7 +73,7 @@ package com.oskarwicha.images.FaceRecognition
 		}
 
 		/**
-		* Creates a zeroed out 2D array
+		* Creates a zeroed out 2D Vector
 		*/
 		public static function make2DVector(m:int, n:int):Vector.<Vector.<Number>>
 		{

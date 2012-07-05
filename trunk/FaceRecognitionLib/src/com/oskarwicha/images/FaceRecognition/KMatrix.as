@@ -4,7 +4,8 @@
    http://blog.kpicturebooth.com
    karthik_tharavaad@yahoo.com
 	
-   Converted from Arrays to Vectors and several functions added by Oskar Wicha
+   Converted from Arrays to Vectors and several functions added and removed
+   by Oskar Wicha
 
  * Direct port from Jama: http://math.nist.gov/javanumerics/jama/
  *
@@ -28,8 +29,7 @@ package com.oskarwicha.images.FaceRecognition
 	import __AS3__.vec.Vector;
 	
 	import flash.display.BitmapData;
-	
-	//import mx.controls.Alert;
+	import flash.utils.getTimer;
 	
 	/**
 	   Jama = Java Matrix class.
@@ -66,8 +66,7 @@ package com.oskarwicha.images.FaceRecognition
 		   Class variables
 		 * ------------------------ */
 		
-		/** Array for internal storage of elements.
-		   @serial internal array storage.
+		/** Vector for internal storage of elements.
 		 */
 		protected var A:Vector.<Vector.<Number>>;
 		
@@ -105,15 +104,18 @@ package com.oskarwicha.images.FaceRecognition
 			var m:int = A.length;
 			var n:uint = A[0].length;
 			var matr:KMatrix = new KMatrix(m, n);
-			var X:Vector.<Vector.<Number>> = matr.getVector();
+			var X:Vector.<Vector.<Number>> = matr.getVector(); 
 			
-			var i:int = m;
+			var i:uint = m;
 			while (i--)
 			{
-				if (uint(A[i].length) != n)
+				if (A[i].length != n)
+				{
 					throw new Error("All rows must have the same length.");
-				
-				X[i] = A[i];
+				}else 
+				{
+					X[i] = A[i];
+				}
 			}
 			return matr;
 		}
@@ -131,7 +133,7 @@ package com.oskarwicha.images.FaceRecognition
 			return matr;
 		}
 		
-		public function setVector(A:Vector.<Vector.<Number>>):void
+		public final function setVector(A:Vector.<Vector.<Number>>):void
 		{
 			this.A = A;
 		}
@@ -152,14 +154,17 @@ package com.oskarwicha.images.FaceRecognition
 			
 			var matr:KMatrix = new KMatrix(m, n);
 			var A:Vector.<Vector.<Number>> = matr.getVector();
-			
+			var Ai:Vector.<Number>;
 			var i:int = m;
 			var j:int;
 			while (i--)
 			{
+				Ai = A[i];
 				j = n;
 				while (j--)
-					A[i][j] = vals[int(i + int(j * m))];
+					Ai[j] = vals[uint(i + (j * m))];
+				
+				A[i] = Ai;
 			}
 			return matr;
 		}
@@ -170,13 +175,13 @@ package com.oskarwicha.images.FaceRecognition
 		/** Make a deep copy of a matrix
 		 */
 		
-		public function copy():KMatrix
+		public final function copy():KMatrix
 		{
 			var X:KMatrix = new KMatrix(m, n);
 			var C:Vector.<Vector.<Number>> = X.getVector();
-			for (var i:int = 0; i < m; ++i)
+			for (var i:uint = 0; i < m; ++i)
 			{
-				for (var j:int = 0; j < n; ++j)
+				for (var j:uint = 0; j < n; ++j)
 				{
 					C[i][j] = A[i][j];
 				}
@@ -187,7 +192,7 @@ package com.oskarwicha.images.FaceRecognition
 		/** Clone the Matrix object.
 		 */
 		
-		public function clone():Object
+		public final function clone():Object
 		{
 			return this.copy();
 		}
@@ -196,7 +201,7 @@ package com.oskarwicha.images.FaceRecognition
 		   @return     Pointer to the two-dimensional array of matrix elements.
 		 */
 		
-		public function getVector():Vector.<Vector.<Number>>
+		public final function getVector():Vector.<Vector.<Number>>
 		{
 			return A;
 		}
@@ -205,7 +210,7 @@ package com.oskarwicha.images.FaceRecognition
 		   @return     m, the number of rows.
 		 */
 		
-		public function getRowDimension():int
+		public final function getRowDimension():int
 		{
 			return m;
 		}
@@ -214,7 +219,7 @@ package com.oskarwicha.images.FaceRecognition
 		   @return     n, the number of columns.
 		 */
 		
-		public function getColumnDimension():int
+		public final function getColumnDimension():int
 		{
 			return n;
 		}
@@ -226,7 +231,7 @@ package com.oskarwicha.images.FaceRecognition
 		   @exception  ArrayIndexOutOfBoundsException
 		 */
 		
-		public function get(i:int, j:int):Number
+		public final function get(i:uint, j:uint):Number
 		{
 			return A[i][j];
 		}
@@ -240,15 +245,19 @@ package com.oskarwicha.images.FaceRecognition
 		   @exception  ArrayIndexOutOfBoundsException Submatrix indices
 		 */
 		
-		public function getMatrixWithRange(i0:int, i1:int, j0:int, j1:int):KMatrix
+		public function getMatrixWithRange(i0:uint, i1:uint, j0:uint, j1:uint):KMatrix
 		{
-			var X:KMatrix = new KMatrix(int(i1 - i0 + 1), int(j1 - j0 + 1));
+			var X:KMatrix = new KMatrix(uint(i1 - i0 + 1), uint(j1 - j0 + 1));
 			var B:Vector.<Vector.<Number>> = X.getVector();
-			for (var i:int = i0; i <= i1; ++i)
+			var Ai:Vector.<Number>;
+			var Bi_i0:Vector.<Number>;
+			for (var i:uint = i0; i <= i1; ++i)
 			{
-				for (var j:int = j0; j <= j1; ++j)
+				Ai = A[i];
+				Bi_i0 = B[uint(i - i0)];
+				for (var j:uint = j0; j <= j1; ++j)
 				{
-					B[int(i - i0)][int(j - j0)] = A[i][j];
+					Bi_i0[uint(j - j0)] = Ai[j];
 				}
 			}
 			return X;
@@ -258,7 +267,7 @@ package com.oskarwicha.images.FaceRecognition
 		   @param i   Row index
 		   @return     A(i,0:lenght-1)
 		*/
-		public function getRow(i:int):KMatrix
+		public function getRow(i:uint):KMatrix
 		{
 			var X:KMatrix = new KMatrix(1, this.n);
 			X.getVector()[0] = A[i];
@@ -340,7 +349,7 @@ package com.oskarwicha.images.FaceRecognition
 		   @exception  ArrayIndexOutOfBoundsException
 		 */
 		
-		public function set(i:int, j:int, s:Number):void
+		public function set(i:uint, j:uint, s:Number):void
 		{
 			A[i][j] = s;
 		}
@@ -356,12 +365,15 @@ package com.oskarwicha.images.FaceRecognition
 		
 		public function setMatrixWithRange(i0:int, i1:int, j0:int, j1:int, X:KMatrix):void
 		{
-			for (var i:int = i0; i <= i1; i++)
+			var Ai:Vector.<Number>;
+			for (var i:int = i0; i <= i1; ++i)
 			{
-				for (var j:int = j0; j <= j1; j++)
-				{
-					A[i][j] = X.get(int(i - i0), int(j - j0));
-				}
+				var i_i0:int = int(i - i0);
+				Ai = A[i];
+				for (var j:int = j0; j <= j1; ++j)
+					Ai[j] = X.get(i_i0, int(j - j0));
+				
+				A[i] = Ai;
 			}
 		}
 		
@@ -373,13 +385,14 @@ package com.oskarwicha.images.FaceRecognition
 		{
 			var X:KMatrix = new KMatrix(n, m);
 			var C:Vector.<Vector.<Number>> = X.getVector();
-			for (var i:int = 0; i < m; ++i)
+			var Ai:Vector.<Number>;
+			for (var i:uint = 0; i < m; ++i)
 			{
-				for (var j:int = 0; j < n; ++j)
-				{
-					C[j][i] = A[i][j];
-				}
+				Ai = A[i];
+				for (var j:uint = 0; j < n; ++j)
+					C[j][i] = Ai[j];
 			}
+			
 			return X;
 		}
 		
@@ -390,13 +403,10 @@ package com.oskarwicha.images.FaceRecognition
 		public function normF():Number
 		{
 			var f:Number = 0;
-			for (var i:int = 0; i < m; i++)
-			{
-				for (var j:int = 0; j < n; j++)
-				{
+			for (var i:uint = 0; i < m; ++i)
+				for (var j:uint = 0; j < n; ++j)
 					f = Maths.hypot(f, A[i][j]);
-				}
-			}
+
 			return f;
 		}
 			
@@ -408,12 +418,17 @@ package com.oskarwicha.images.FaceRecognition
 		public function plusEquals(B:KMatrix):KMatrix
 		{
 			checkMatrixDimensions(B);
-			for (var i:int = 0; i < m; i++)
+			var Ai:Vector.<Number>;
+			var BAi:Vector.<Number>;
+			for (var i:uint = 0; i < m; ++i)
 			{
-				for (var j:int = 0; j < n; j++)
+				Ai = A[i];
+				BAi = B.A[i];
+				for (var j:uint = 0; j < n; ++j)
 				{
-					A[i][j] = A[i][j] + B.A[i][j];
+					Ai[j] += BAi[j];
 				}
+				A[i] = Ai;
 			}
 			return this;
 		}
@@ -428,12 +443,19 @@ package com.oskarwicha.images.FaceRecognition
 			checkMatrixDimensions(B);
 			var X:KMatrix = new KMatrix(m, n);
 			var C:Vector.<Vector.<Number>> = X.getVector();
-			for (var i:int = 0; i < m; i++)
+			var Ci:Vector.<Number>;
+			var Ai:Vector.<Number>;
+			var BAi:Vector.<Number>;
+			for (var i:uint = 0; i < m; ++i)
 			{
-				for (var j:int = 0; j < n; j++)
+				Ci = C[i];
+				Ai = A[i];
+				BAi = B.A[i];
+				for (var j:uint = 0; j < n; ++j)
 				{
-					C[i][j] = A[i][j] - B.A[i][j];
+					Ci[j] = Ai[j] - BAi[j];
 				}
+				C[i] = Ci;
 			}
 			return X;
 		}
@@ -447,12 +469,17 @@ package com.oskarwicha.images.FaceRecognition
 		{
 			var X:KMatrix = new KMatrix(m, n);
 			var C:Vector.<Vector.<Number>> = X.getVector();
-			for (var i:int = 0; i < m; i++)
-			{
-				for (var j:int = 0; j < n; j++)
+			var Ci:Vector.<Number>;
+			var Ai:Vector.<Number>;
+			for (var i:uint = 0; i < m; ++i)
+			{	
+				Ci = C[i];
+				Ai = A[i];
+				for (var j:uint = 0; j < n; ++j)
 				{
-					C[i][j] = s * A[i][j];
+					Ci[j] = s * Ai[j];
 				}
+				C[i] = Ci;
 			}
 			return X;
 		}
@@ -464,25 +491,28 @@ package com.oskarwicha.images.FaceRecognition
 		
 		public function timesEquals(s:Number):KMatrix
 		{
-			for (var i:int = 0; i < m; i++)
+			var Ai:Vector.<Number>;
+			for (var i:uint = 0; i < m; ++i)
 			{
-				for (var j:int = 0; j < n; j++)
+				Ai = A[i];
+				for (var j:uint = 0; j < n; ++j)
 				{
-					A[i][j] = s * A[i][j];
+					Ai[j] *= s;
 				}
+				A[i] = Ai;
 			}
 			return this;
 		}
 		
 		/** Linear algebraic matrix multiplication, A * B
-		   @param B    another matrix
-		   @return     Matrix product, A * B
-		   @exception  IllegalArgumentException Matrix inner dimensions must agree.
+		 @param B    another matrix
+		 @return     Matrix product, A * B
+		 @exception  IllegalArgumentException Matrix inner dimensions must agree.
 		 *
 		 * @author Oskar Wicha
 		 */
 		
-		public final function times(B:KMatrix):KMatrix
+		public final function timesOld(B:KMatrix):KMatrix
 		{
 			if (B.m != this.n)
 			{
@@ -493,12 +523,12 @@ package com.oskarwicha.images.FaceRecognition
 			var X:KMatrix = new KMatrix(this.m, bn);
 			// trace("X wymiary "+m+" na "+ B.n);
 			var C:Vector.<Vector.<Number>> = X.getVector();
-			//var start:Number = getMilliseconds();
+			//var start:Number = flash.utils.getTimer();
 			
-			var AVec:Vector.<Vector.<Number>> =	this.A;
-			var BVec:Vector.<Vector.<Number>> =	B.A;
+			var AVec:Vector.<Vector.<Number>> = this.A;
+			var BVec:Vector.<Vector.<Number>> = B.A;
 			
-			var Bcolj:Vector.<Number> =	new Vector.<Number>(an, true);
+			var Bcolj:Vector.<Number> =   new Vector.<Number>(an, true);
 			var Arowi:Vector.<Number> = new Vector.<Number>(an, true);
 			var j:int = bn, i:int, k:int, s:Number;
 			
@@ -526,8 +556,140 @@ package com.oskarwicha.images.FaceRecognition
 			//if ((getMilliseconds() - start) > 5)
 			//Alert.show("Mnozenie macierzy trawalo = " + (getMilliseconds() - start).toString() + " ms");
 			//trace("Mnozenie macierzy trawalo = "+(getMilliseconds()-start).toString()+" ms");
-		
+			
 			//if(t>300){Alert.show(t.toString()+" ms");}
+			return X;
+		}
+		
+		
+		/** Linear algebraic matrix multiplication, A * B
+		   @param B    another matrix
+		   @return     Matrix product, A * B
+		   @exception  IllegalArgumentException Matrix inner dimensions must agree.
+		 *
+		 * @author Oskar Wicha
+		 */
+		
+		public function times(B:KMatrix):KMatrix
+		{
+			//var start:Number = flash.utils.getTimer(); //debug
+			if (B.m != this.n)
+			{
+				throw new Error("Matrix inner dimensions must agree.");
+			}
+			var bn:uint = B.n;
+			var an:uint = this.n;
+			var X:KMatrix = new KMatrix(this.m, bn);
+			//trace("B wymiary "+B.n+" na "+ B.m);
+			//trace("this.A wymiary "+this.n+" na "+ this.m);
+			var C:Vector.<Vector.<Number>> = X.getVector();
+			var AVec:Vector.<Vector.<Number>> =	this.A;
+			AVec.fixed = true;
+			var BVecTrans:Vector.<Vector.<Number>> = B.transpose().A;
+			BVecTrans.fixed = true;
+			var Bcolj:Vector.<Number>;
+			
+			var Arowi:Vector.<Number>;
+			var s:Number;
+			
+			if(this.m >= 10)
+			{
+				var Arowi2:Vector.<Number>;
+				var Arowi3:Vector.<Number>;
+				var Arowi4:Vector.<Number>;
+				var Arowi5:Vector.<Number>;
+				var Arowi6:Vector.<Number>;
+				var Arowi7:Vector.<Number>;
+				var Arowi8:Vector.<Number>;
+				var Arowi9:Vector.<Number>;
+				var Arowi10:Vector.<Number>;
+				
+				var s2:Number, s3:Number, s4:Number, s5:Number, s6:Number;
+				var s7:Number, s8:Number, s9:Number, s10:Number;
+				
+				var Bcoljk:Number;
+			}
+			var m_minus_1:uint = uint(m - 1);
+			var i:uint;
+			var k:uint;
+			
+			var j:uint = bn;
+			while (j--)
+			{
+				Bcolj = BVecTrans[j];
+				// jesli pozostaly do obliczen wiecej niz 10 wierszy z tablicy this.A
+				// to wykona sie petla szybsza o 20% od petli wykorzystujacej jeden wiersz
+				// w wewnetrznej petli
+				i = uint(m - 1);
+				while (9 < i)
+				{
+					
+					Arowi = AVec[i];
+					Arowi2 = AVec[uint(i-1)];
+					Arowi3 = AVec[uint(i-2)];
+					Arowi4 = AVec[uint(i-3)];
+					Arowi5 = AVec[uint(i-4)];
+					Arowi6 = AVec[uint(i-5)];
+					Arowi7 = AVec[uint(i-6)];
+					Arowi8 = AVec[uint(i-7)];
+					Arowi9 = AVec[uint(i-8)];
+					Arowi10 = AVec[uint(i-9)];
+					
+					s = 0.0;
+					s2 = 0.0;
+					s3 = 0.0;
+					s4 = 0.0;
+					s5 = 0.0;
+					s6 = 0.0;
+					s7 = 0.0;
+					s8 = 0.0;
+					s9 = 0.0;	
+					s10 = 0.0;
+					
+					k = an;
+					while (k--)
+					{
+						Bcoljk = Bcolj[k];
+						s += Arowi[k] * Bcoljk;
+						s2 += Arowi2[k] * Bcoljk;
+						s3 += Arowi3[k] * Bcoljk;
+						s4 += Arowi4[k] * Bcoljk;
+						s5 += Arowi5[k] * Bcoljk;
+						s6 += Arowi6[k] * Bcoljk;
+						s7 += Arowi7[k] * Bcoljk;
+						s8 += Arowi8[k] * Bcoljk;
+						s9 += Arowi9[k] * Bcoljk;
+						s10 += Arowi10[k] * Bcoljk;
+					}
+					C[i][j] = s;
+					C[uint(i-1)][j] = s2;
+					C[uint(i-2)][j] = s3;
+					C[uint(i-3)][j] = s4;
+					C[uint(i-4)][j] = s5;
+					C[uint(i-5)][j] = s6;
+					C[uint(i-6)][j] = s7;
+					C[uint(i-7)][j] = s8;
+					C[uint(i-8)][j] = s9;
+					C[uint(i-9)][j] = s10;
+
+					i -= 10;
+				}
+				// jesli pozostaly do obliczen mniej niz 10 wierszy z tablicy this.A
+				// jesli liczba wierszy w tablicy this.A byla podzielna przez 10 to ta
+				// petla sie nigdy nie wykona
+				while (i--)
+				{
+					Arowi = AVec[i];
+					s = 0.0;
+					k = an;
+					while (k--)
+						s += Arowi[k] * Bcolj[k];
+
+					C[i][j] = s;
+				}
+			}
+			X.setVector(C);
+			//trace("Matrix multiplication done in = " + (flash.utils.getTimer() - start).toString() + " ms");
 			return X;
 		}
 		
@@ -611,9 +773,9 @@ package com.oskarwicha.images.FaceRecognition
 		public function toString():String
 		{
 			var output:String = "";
-			for (var i:int = 0; i < m; i++)
+			for (var i:uint = 0; i < m; i++)
 			{
-				for (var j:int = 0; j < n; j++)
+				for (var j:uint = 0; j < n; j++)
 				{
 					output += A[i][j] + "\t";
 				}
@@ -636,11 +798,5 @@ package com.oskarwicha.images.FaceRecognition
 				throw new Error("Matrix dimensions must agree.");
 			}
 		}
-		
-		private function getMilliseconds():Number
-		{
-			return (new Date()).getTime();
-		}
-	
 	}
 }
