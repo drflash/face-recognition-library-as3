@@ -29,27 +29,37 @@
 //
 package jp.maaash.ObjectDetection
 {
-	public class HaarCascade{
-		public  var base_window_w   :int;
-		public  var base_window_h   :int;
-		public  var inv_window_area :Number;
-		public  var trees           :Array = new Array;
-		private var _scale          :Number = 0;
 
-		public function HaarCascade() {
+	public class HaarCascade
+	{
+
+		public function HaarCascade()
+		{
 		}
 
-		public function set scale(s:Number):void{
-			if( s==_scale ){ return; }
+		public var base_window_h:int;
+		public var base_window_w:int;
+		public var inv_window_area:Number;
+		public var trees:Array = new Array;
+		private var _scale:Number = 0;
+
+		public function set scale(s:Number):void
+		{
+			if (s == _scale)
+			{
+				return;
+			}
 			_scale = s;
 			// update rect's width, height, weight
-			var treenums :int = trees.length, tree :FeatureTree, featurenums :int, i:int=0, j:int=0;
-			inv_window_area = 1/(base_window_w*base_window_h*s*s);
-			for( i=0; i<treenums; i++ ){
-				tree        = trees[i];
+			var treenums:int = trees.length, tree:FeatureTree, featurenums:int, i:int = 0, j:int = 0;
+			inv_window_area = 1 / (base_window_w * base_window_h * s * s);
+			for (i = 0; i < treenums; i++)
+			{
+				tree = trees[i];
 				featurenums = tree.features.length;
-				for( j=0; j<featurenums; j++ ){
-					tree.features[j].setScaleAndWeight( s, inv_window_area );
+				for (j = 0; j < featurenums; j++)
+				{
+					tree.features[j].setScaleAndWeight(s, inv_window_area);
 				}
 			}
 		}

@@ -15,7 +15,6 @@ package com.oskarwicha.images.FaceRecognition
 	 */
 	public class FeatureVector
 	{
-
 		/**
 		 * Konstruktor
 		 *

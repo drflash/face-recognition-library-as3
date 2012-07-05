@@ -11,7 +11,6 @@ package com.oskarwicha.images.FaceRecognition
 	 */
 	internal class EigenFaceGen
 	{
-
 		/**
 		 * Konstruktor
 		 */
@@ -109,7 +108,6 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		internal final function processTrainingSet(faces:Vector.<Face>, progress:ProgressTracker):void
 		{
-			//var start:Number = new Date().getTime(); //test
 			/**
 			 * KROK 1
 			 * Wczytanie zdjęć i zapisanie w postaci jednego
@@ -148,7 +146,7 @@ package com.oskarwicha.images.FaceRecognition
 			while (i--)
 				averageFace.plusEquals(matrix.getRow(i));
 
-			var amountOfFacesInverted:Number = Number(1.0 / matrix.getRowDimension());
+			var amountOfFacesInverted:Number = Number(1 / matrix.getRowDimension());
 
 			// Końcowy etap obliczania średniej twarzy
 			// przez pomnożenie przez odwrotność ilości
@@ -156,7 +154,7 @@ package com.oskarwicha.images.FaceRecognition
 			averageFace.timesEquals(amountOfFacesInverted);
 			var bigAvg:KMatrix = new KMatrix(matrix.getRowDimension(), matrix.getColumnDimension());
 
-			var bigAvgColumnDimensionMinusOne:int = bigAvg.getColumnDimension() - 1;
+			var bigAvgColumnDimensionMinusOne:int = int(bigAvg.getColumnDimension() - 1);
 			i = bigAvg.getRowDimension();
 			while (i--)
 				bigAvg.setMatrixWithRange(i, i, 0, bigAvgColumnDimensionMinusOne, averageFace);
@@ -202,8 +200,8 @@ package com.oskarwicha.images.FaceRecognition
 			 *
 			 */
 			progress.advanceProgress("Konwertowanie eigenvectors...");
-			//trace("A[X][Y]=A[" + A.getColumnDimension() + "][" + A.getRowDimension() + "]");
-			//trace("eigenVectors[X][Y]=eigenVectors[" + eigVectors.getColumnDimension() + "][" + eigVectors.getRowDimension() + "]");
+			trace("A[X][Y]=A[" + A.getColumnDimension() + "][" + A.getRowDimension() + "]");
+			trace("eigenVectors[X][Y]=eigenVectors[" + eigVectors.getColumnDimension() + "][" + eigVectors.getRowDimension() + "]");
 			eigVectors = A.times(eigVectors);
 			//trace("eigenVectors[X][Y]=eigenVectors[" + eigVectors.getColumnDimension() + "][" + eigVectors.getRowDimension() + "]");
 
@@ -217,7 +215,7 @@ package com.oskarwicha.images.FaceRecognition
 			progress.advanceProgress("Uzyskuje eigenvalues ...");
 
 			var values:Vector.<Number> = diag(eigValues);
-			var AColumnDimensionMinusOne:int = A.getColumnDimension() - 1;
+			var AColumnDimensionMinusOne:int = int(A.getColumnDimension() - 1);
 
 			i = values.length;
 			while (i--)
@@ -233,44 +231,38 @@ package com.oskarwicha.images.FaceRecognition
 			numOfEigenVecs = 0;
 
 			var tmp:KMatrix;
-			var eigVectorsRowDimensionMinusOne:int = eigVectors.getRowDimension() - 1;
+			var eigVectorsRowDimension:uint = eigVectors.getRowDimension();
+			var eigVectorsRowDimensionMinusOne:uint = eigVectorsRowDimension - 1;
 			var tempKMatrix:KMatrix;
 
 			i = eigVectors.getColumnDimension();
 			while (i--)
 			{
-				if (values[i] < 0.0001)
-				{
-					tmp = new KMatrix(eigVectorsRowDimensionMinusOne + 1, 1);
-				}
-				else
+				if (values[i] >= 0.0001)
 				{
 					tempKMatrix = eigVectors.getMatrixWithRange(0, eigVectorsRowDimensionMinusOne, i, i);
 					tmp = tempKMatrix.timesScalar(1 / tempKMatrix.normF());
 					++numOfEigenVecs;
 				}
+				else
+				{
+					tmp = new KMatrix(eigVectorsRowDimension, 1);
+				}
 				eigVectors.setMatrixWithRange(0, eigVectorsRowDimensionMinusOne, i, i, tmp);
 			}
-			eigVectors = eigVectors.getMatrixWithRange(0, eigVectorsRowDimensionMinusOne, 0, numOfEigenVecs - 1);
-
+			eigVectors = eigVectors.getMatrixWithRange(0, eigVectorsRowDimensionMinusOne, 0, uint(numOfEigenVecs - 1));
 			trained = true;
 
 			trace("Uzyskano " + numOfEigenVecs + " eigenVectors"); //test
 			trace("Wymiary eigenVectors: " + eigVectors.getRowDimension() + " x " + eigVectors.getColumnDimension()); //test
-			//Alert.show("Training finished in  : " + (new Date().getTime() - start).toString() + " ms"); //test
 		}
 
 		/* Funkcja porównująca dwa obiekty klasy "di_pair" używana
 		 przy sortowaniu tablic. */
-		private function di_pair_sort(arg0:Object, arg1:Object):int
+		private function di_pair_sort(arg0:di_pair, arg1:di_pair):int
 		{
-			var dif:Number = (di_pair(arg0).value - di_pair(arg1).value);
-			if (dif > 0)
-				return -1;
-			else if (dif < 0)
-				return 1;
-			else
-				return 0;
+			var diff:Number = arg0.value - arg1.value;
+			return (diff > 0) ? -1 : (diff < 0) ? 1 : 0;
 		}
 
 		/**
@@ -303,7 +295,6 @@ package com.oskarwicha.images.FaceRecognition
 		private function sortem(D:KMatrix, V:KMatrix):Vector.<KMatrix>
 		{
 			var dvec:Vector.<Number> = diag(D);
-
 			var dvec_indexed:Vector.<di_pair> = new Vector.<di_pair>(dvec.length, true);
 			var i:int = dvec_indexed.length;
 			while (i--)
@@ -321,21 +312,22 @@ package com.oskarwicha.images.FaceRecognition
 			var D2:KMatrix = new KMatrix(D.getRowDimension(), D.getColumnDimension());
 			var V2:KMatrix = new KMatrix(VRowDimension, VColumnDimension);
 
-			var height:int;
+			var height:int = int(VRowDimension - 1);
 			var tmp:KMatrix;
 
+			var tempIndex:int;
 			i = dvec_indexed.length;
 			while (i--)
 			{
-				D2.set(i, i, D.get(dvec_indexed[i].index, dvec_indexed[i].index));
-				height = VRowDimension - 1;
-				tmp = V.getRow(dvec_indexed[i].index);
+				tempIndex = dvec_indexed[i].index;
+				D2.set(i, i, D.get(tempIndex, tempIndex));
+				tmp = V.getRow(tempIndex);
 				V2.setMatrixWithRange(i, i, 0, height, tmp);
 			}
 
 			var V3:KMatrix = new KMatrix(VRowDimension, VColumnDimension);
-			var VRowDimensionMinusOne:int = VRowDimension - 1;
-			var VColumnDimensionMinusOne:int = VColumnDimension - 1;
+			var VRowDimensionMinusOne:int = int(VRowDimension - 1);
+			var VColumnDimensionMinusOne:int = int(VColumnDimension - 1);
 			var j:int;
 			i = VRowDimension;
 			while (i--)
@@ -343,7 +335,7 @@ package com.oskarwicha.images.FaceRecognition
 				j = VColumnDimension;
 				while (j--)
 				{
-					V3.set(i, j, V2.get(VRowDimensionMinusOne - i, VColumnDimensionMinusOne - j));
+					V3.set(i, j, V2.get(int(VRowDimensionMinusOne - i), int(VColumnDimensionMinusOne - j)));
 				}
 			}
 			var vec:Vector.<KMatrix> = new Vector.<KMatrix>(2, true);
@@ -357,7 +349,6 @@ package com.oskarwicha.images.FaceRecognition
 /* Klasa pomocnicza widoczna tylko dla kodu wewnątrz tego pliku */
 class di_pair
 {
-
 	public var index:int;
 	public var value:Number;
 }

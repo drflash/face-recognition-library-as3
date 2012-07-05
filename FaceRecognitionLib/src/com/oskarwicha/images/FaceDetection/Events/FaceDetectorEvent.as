@@ -1,7 +1,7 @@
 package com.oskarwicha.images.FaceDetection.Events
 {
 	import flash.events.Event;
-	
+
 	/**
 	 * Klasa zdarzeń wysyłanych przez obiekty klasy
 	 * <code>FaceDetector</code> gdy obiekt tej klasy zakończy
@@ -12,24 +12,22 @@ package com.oskarwicha.images.FaceDetection.Events
 	 */
 	public class FaceDetectorEvent extends Event
 	{
+
 		/**
 		 * Publiczna stała statyczna przechowyjąca
 		 * tekst używany do identyfikacji typu
 		 * zdarzenia (event'u).
 		 *
 		 */
-		public static const NO_FACES_DETECTED:String =
-			"FaceDetectorEvent_NO_FACES_DETECTED";
-		
+		public static const FACE_CROPPED:String = "FaceDetectorEvent_FACE_CROPPED";
 		/**
 		 * Publiczna stała statyczna przechowyjąca
 		 * tekst używany do identyfikacji typu
 		 * zdarzenia (event'u).
 		 *
 		 */
-		public static const FACE_CROPED:String =
-			"FaceDetectorEvent_FACE_CROPED";
-		
+		public static const NO_FACES_DETECTED:String = "FaceDetectorEvent_NO_FACES_DETECTED";
+
 		/**
 		 * Konstruktor klasy.
 		 * Używany do stworzenia obiektu zdażenia (event'u)
@@ -44,12 +42,11 @@ package com.oskarwicha.images.FaceDetection.Events
 		 * dalszą propagacją
 		 *
 		 */
-		public function FaceDetectorEvent(type:String,
-			bubbles:Boolean = false, cancelable:Boolean = false)
+		public function FaceDetectorEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
 		{
 			super(type, bubbles, cancelable);
 		}
-		
+
 		/**
 		 * Funkcja nadpisująca już istniejącą funkcje o takiej
 		 * samej nazwie w klasie <code>flash.events.Event</code>.
@@ -58,12 +55,10 @@ package com.oskarwicha.images.FaceDetection.Events
 		 * @return Kopia obiektu
 		 *
 		 */
-		public override function clone():Event
+		override public function clone():Event
 		{
-			var ev:FaceDetectorEvent =
-				new FaceDetectorEvent(type, bubbles, cancelable);
+			var ev:FaceDetectorEvent = new FaceDetectorEvent(type, bubbles, cancelable);
 			return ev;
 		}
-	
 	}
 }

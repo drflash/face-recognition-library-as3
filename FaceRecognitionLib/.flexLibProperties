@@ -1,40 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<flexLibProperties includeAllClasses="false" version="1">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
   <includeClasses>
-    <classEntry path="jp.maaash.ObjectDetection.HaarCascadeLoader"/>
-    <classEntry path="log"/>
-    <classEntry path="jp.maaash.ObjectDetection.FeatureBase"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.Picture"/>
-    <classEntry path="jp.maaash.ObjectDetection.ObjectDetectorEvent"/>
-    <classEntry path="jp.maaash.ObjectDetection.HaarCascade"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.FeatureVector"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.IDistanceMeasure"/>
-    <classEntry path="com.karthik.math.lingalg.KMatrix"/>
-    <classEntry path="com.karthik.math.lingalg.EigenvalueDecomposition"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.EigenvalueDecomposition"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.KMatrix"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.Maths"/>
+    <classEntry path="com.oskarwicha.images.FaceDetection.Events.FaceDetectorEvent"/>
     <classEntry path="com.oskarwicha.images.FaceDetection.FaceDetector"/>
     <classEntry path="com.oskarwicha.images.FaceRecognition.EigenFaceGen"/>
-    <classEntry path="deng.fzip.FZipFile"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.Face"/>
-    <classEntry path="jp.maaash.ObjectDetection.FeatureTree"/>
-    <classEntry path="jp.maaash.net.ZipLoader"/>
-    <classEntry path="jp.maaash.ObjectDetection.ObjectDetector"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.Events.FaceEvent"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.FeatureSpace"/>
-    <classEntry path="jp.maaash.ObjectDetection.Feature3Rects"/>
-    <classEntry path="jp.maaash.ObjectDetection.TargetImage"/>
-    <classEntry path="deng.fzip.FZip"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.ProgressTracker"/>
-    <classEntry path="deng.utils.ChecksumUtil"/>
-    <classEntry path="deng.fzip.FZipErrorEvent"/>
-    <classEntry path="deng.fzip.FZipLibrary"/>
-    <classEntry path="jp.maaash.ObjectDetection.Feature2Rects"/>
-    <classEntry path="jp.maaash.ObjectDetection.ObjectDetectorOptions"/>
-    <classEntry path="deng.fzip.FZipEvent"/>
-    <classEntry path="jp.maaash.ObjectDetection.HaarRect"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.Events.FaceRecognitionEvent"/>
-    <classEntry path="com.karthik.math.lingalg.Maths"/>
-    <classEntry path="com.oskarwicha.images.FaceRecognition.FaceRecognition"/>
     <classEntry path="com.oskarwicha.images.FaceRecognition.EuclideanDistance"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.Events.FaceEvent"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.Events.FaceRecognitionEvent"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.Face"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.FaceRecognition"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.FeatureSpace"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.FeatureVector"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.IDistanceMeasure"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.Picture"/>
+    <classEntry path="com.oskarwicha.images.FaceRecognition.ProgressTracker"/>
+    <classEntry path="deng.fzip.FZip"/>
+    <classEntry path="deng.fzip.FZipErrorEvent"/>
+    <classEntry path="deng.fzip.FZipEvent"/>
+    <classEntry path="deng.fzip.FZipFile"/>
+    <classEntry path="deng.fzip.FZipLibrary"/>
+    <classEntry path="deng.utils.ChecksumUtil"/>
+    <classEntry path="jp.maaash.ObjectDetection.Feature2Rects"/>
+    <classEntry path="jp.maaash.ObjectDetection.Feature3Rects"/>
+    <classEntry path="jp.maaash.ObjectDetection.FeatureBase"/>
+    <classEntry path="jp.maaash.ObjectDetection.FeatureTree"/>
+    <classEntry path="jp.maaash.ObjectDetection.HaarCascade"/>
+    <classEntry path="jp.maaash.ObjectDetection.HaarCascadeLoader"/>
+    <classEntry path="jp.maaash.ObjectDetection.HaarRect"/>
+    <classEntry path="jp.maaash.ObjectDetection.ObjectDetector"/>
+    <classEntry path="jp.maaash.ObjectDetection.ObjectDetectorEvent"/>
+    <classEntry path="jp.maaash.ObjectDetection.ObjectDetectorOptions"/>
+    <classEntry path="jp.maaash.ObjectDetection.TargetImage"/>
+    <classEntry path="jp.maaash.net.ZipLoader"/>
+    <classEntry path="log"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
