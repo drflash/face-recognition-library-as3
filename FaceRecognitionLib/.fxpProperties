@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" compiles="true" parentProject="8370f1eb-c723-4b4d-9d13-bb97bf54b8dd" projectUUID="8370f1eb-c723-4b4d-9d13-bb97bf54b8dd" pureCatalystProject="false" sdkVersion="4.6.0" uuid="140098b9-d449-4685-aa49-1b77428807ea" version="15">
+  <projects/>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="140098b9-d449-4685-aa49-1b77428807ea"/>
+    <linked location="C:/Users/OscylO/Adobe Flash Builder 4/FaceRecognitionLib/libs" path="/libs" position="1" uuid="e61721d7-0ae8-4e3c-9b63-9bfe688dbfe4"/>
+  </swc>
+  <misc/>
+  <theme/>
+  <mxmlFormattingPrefs groupAttributesByState="true" maxLineWidth="100" mxmlAlignAttributes="true" mxmlAttributeOrder="id,userLabel,includeIn,excludeFrom,visible,x,y,z,left,right,top,bottom,width,height,minWidth,minHeight,maxWidth,maxHeight,label" mxmlKeepAttributeValuesOrganized="true"/>
+</fxpProperties>
