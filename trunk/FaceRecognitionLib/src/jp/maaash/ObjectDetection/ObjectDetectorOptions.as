@@ -6,6 +6,9 @@
 // Copyright (C) 2008, Masakazu OHTSUKA (mash), all rights reserved.
 // contact o.masakazu(at)gmail.com
 //
+// additional optimizations by Mario Klingemann / Quasimondo
+// contact mario(at)quasimondo.com
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
 //
@@ -29,7 +32,11 @@
 //
 package jp.maaash.ObjectDetection
 {
-	public class ObjectDetectorOptions{
+	/**
+	 * @flowerModelElementId _WCtdMPQwEeG4_d92CzHtyg
+	 */
+	public class ObjectDetectorOptions
+	{
 		public static const SCALE_FACTOR      :Number = 1.2;
 		public static const MIN_SIZE          :int    = 15;
 		public static const MIN_MARGIN_SEARCH :int = 3;
