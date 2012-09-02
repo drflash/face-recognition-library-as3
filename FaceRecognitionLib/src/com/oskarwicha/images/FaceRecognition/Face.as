@@ -3,6 +3,7 @@ package com.oskarwicha.images.FaceRecognition
 	import com.oskarwicha.images.FaceDetection.Events.FaceDetectorEvent;
 	import com.oskarwicha.images.FaceDetection.FaceDetector;
 	import com.oskarwicha.images.FaceRecognition.Events.FaceEvent;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -11,7 +12,15 @@ package com.oskarwicha.images.FaceRecognition
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
 
+	/**
+	 * @flowerModelElementId _V8C0gPQwEeG4_d92CzHtyg
+	 */
+	[Event(name="FaceEvent.FACE_LOADED", type="com.oskarwicha.images.FaceRecognition.Events.FaceEvent")]
+	
 	/**
 	 * Zawiera zdjecie twarzy oraz tekst identyfikujący jej
 	 * właściciela (jeśli znany). Umożliwia załadowanie zdjęcia
@@ -22,52 +31,55 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @flowerModelElementId _Togp4GglEeCqZchJBDddKw
 	 */
-	public class Face extends EventDispatcher
+	public class Face extends EventDispatcher implements IExternalizable
 	{
+		/**
+		 * @flowerModelElementId _V8DblPQwEeG4_d92CzHtyg
+		 */
+		static private var faceDetector:FaceDetector = new FaceDetector();
+		static private var busy:Boolean = false;
 
 		/**
 		 * Konstruktor
 		 *
-		 * @param faceUrl Adres url do zdjęcia twarzy
+		 * @param faceImgUrl Adres url do zdjęcia twarzy
 		 * @param faceClasification Tekst identyfikujący
 		 * właściciela twarzy jesli znany
 		 * @cropFaceFromImg Używa detekcji twarzy do jej
-		 * wykadrowania ze zdjęcia (NOT TESTED)
+		 * wykadrowania ze zdjęcia
 		 */
-		public function Face(faceUrl:String = null, faceClasification:String = null, cropFaceFromImg:Boolean = false)
+		public function Face(faceImgUrl:String = null, faceClasification:String = null, cropFaceFromImg:Boolean = false)
 		{
 			//TO:DO przydało by sie zwracać błąd
 			// jesli podano zły adres url
 			_classification = faceClasification;
 			_description = "";
-			_faceUrl = faceUrl;
+			_faceImgUrl = faceImgUrl;
 
-			if (_faceUrl != null)
+			if (_faceImgUrl != null)
 				loadFromUrl(cropFaceFromImg);
 		}
 
 		// Przechowuje tekst identyfikujący wlaściciela twarzy,
 		// której zdjęcie zawarte jest w obiekcie "_picture".
 		private var _classification:String;
-
 		private var _crop:Boolean = false;
-
 		private var _description:String;
 
 		/* Ponizsze obiekty prywatne nie mają funkcji
 		   umożliwiających do nich dostęp publiczny.
 		 */
-		private var _faceUrl:String;
-
-		private var _globalwindowsize:int = 5;
-
-		private var _imgLoader:Loader = new Loader();
-
+		private var _faceImgUrl:String;
+		private var _globalWindowSize:int = 5;
+		private var _imgLoader:Loader;
 		private const _normalize:Boolean = true;
 
-		/* Poniższe trzy obiekty posiadają specjalne funkcje
-		   (ang. getters oraz ang. setters) umozliwiające
-		   publiczny dostęp do tych obiektów.
+		/* Poniższy obiekty posiada specjalne funkcje
+		   (ang. getter oraz ang. setter) umozliwiające
+		   publiczny dostęp do obiektu.
+		 */
+		/**
+		 * @flowerModelElementId _V8Ge4PQwEeG4_d92CzHtyg
 		 */
 		private var _picture:Picture;
 
@@ -103,30 +115,56 @@ package com.oskarwicha.images.FaceRecognition
 		{
 			_description = value;
 		}
-
+		
 		/**
 		 * Umożliwia detekcje twarzy w ładowanym do obiektu zdjęciu.
 		 *
 		 * @param im Bitmapa zawierająca zdjęcie
 		 *
 		 */
-		public function detectFaceInPicture(source:Bitmap, destination:Bitmap):void
+		public function detectFaceInPicture(source:Bitmap):void
 		{
-			var faceDetector:FaceDetector = new FaceDetector();
-
+			busy = true;
+			
+			if(faceDetector == null)
+				faceDetector = new FaceDetector();
+			
 			faceDetector.addEventListener(FaceDetectorEvent.NO_FACES_DETECTED, function onNoFacesDetected(e:Event):void
 			{
-				trace("Uwaga: Twarz nie znaleziona na zdjęciu");
+				faceDetector.removeEventListener(FaceDetectorEvent.NO_FACES_DETECTED, arguments.callee);
+				trace("Warning: Face not found on image");
+				busy = false;
 			});
-			faceDetector.addEventListener(FaceDetectorEvent.FACE_CROPPED, function(e:Event):void
-			{
-				destination = faceDetector.cropedFace;
-				trace("Sukces: Twarz znaleziona i wykadrowana");
-				trace("Wymiary kadrowanej twarzy: " + destination.height + "x" + destination.width);
-			});
-
+			faceDetector.addEventListener(FaceDetectorEvent.FACE_CROPPED, onFaceCropped); 
 			faceDetector.loadFaceImageFromBitmap(source);
-
+		}
+		
+		private function onFaceCropped(e:FaceDetectorEvent):void
+		{
+			faceDetector.removeEventListener(FaceDetectorEvent.FACE_CROPPED, onFaceCropped);
+			//faceDetector = null;
+			//trace("Sukces: Twarz znaleziona i wykadrowana");
+			//trace("Wymiary kadrowanej twarzy: " + e.faceImg.height + "x" + e.faceImg.width);
+			
+			var rim:Bitmap = resizeImage(
+				e.faceImg,
+				new Rectangle(
+					0, 0,
+					FaceRecognizer.IDEAL_IMAGE_WIDTH,
+					FaceRecognizer.IDEAL_IMAGE_HEIGHT),
+				true);
+			// Przypisuje załadowane zdjęcie twarzy do 
+			// publicznej zmiennej "picture" tej klasy. 
+			this.picture = new Picture(rim.bitmapData);
+			// Normalizacja obrazu.
+			if (_normalize)
+				this.picture.normalize();
+			// Wysyła zdarzenie (ang. event) zawierające referencje
+			// do obiektu z załadowaną twarza.
+			var ev:FaceEvent = new FaceEvent(FaceEvent.FACE_LOADED);
+			ev.face = this;
+			busy = false;
+			dispatchEvent(ev);
 		}
 
 		/**
@@ -150,19 +188,22 @@ package com.oskarwicha.images.FaceRecognition
 			_crop = crop;
 
 			if (_crop)
-				detectFaceInPicture(faceBitmap, faceBitmap);
-			var rim:Bitmap = this.resizeImage(faceBitmap, new Rectangle(0, 0, FaceRecognition.IDEAL_IMAGE_WIDTH, FaceRecognition.IDEAL_IMAGE_HEIGHT), true);
-			// Przypisuje załadowane zdjęcie twarzy do 
-			// publicznej zmiennej "picture" tej klasy. 
-			this.picture = new Picture(rim.bitmapData);
-			// Normalizacja obrazu.
-			if (_normalize)
-				this.picture.normalize();
-			// Wysyła zdarzenie (ang. event) zawierające referencje
-			// do obiektu z załadowaną twarza.
-			var ev:FaceEvent = new FaceEvent(FaceEvent.FACE_LOADED);
-			ev.face = this;
-			dispatchEvent(ev);
+				detectFaceInPicture(faceBitmap);
+			else
+			{
+				var rim:Bitmap = this.resizeImage(faceBitmap, new Rectangle(0, 0, FaceRecognizer.IDEAL_IMAGE_WIDTH, FaceRecognizer.IDEAL_IMAGE_HEIGHT), true);
+				// Przypisuje załadowane zdjęcie twarzy do 
+				// publicznej zmiennej "picture" tej klasy. 
+				this.picture = new Picture(rim.bitmapData);
+				// Normalizacja obrazu.
+				if (_normalize)
+					this.picture.normalize();
+				// Wysyła zdarzenie (ang. event) zawierające referencje
+				// do obiektu z załadowaną twarza.
+				var ev:FaceEvent = new FaceEvent(FaceEvent.FACE_LOADED);
+				ev.face = this;
+				dispatchEvent(ev);
+			}
 		}
 
 		//Setters/Getters
@@ -186,9 +227,21 @@ package com.oskarwicha.images.FaceRecognition
 		private function loadFromUrl(crop:Boolean = false):void
 		{
 			_crop = crop;
+			_imgLoader = new Loader();
 			_imgLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, startPreprocessingLoadedImageFromUrl);
 			//trace(_faceUrl);
-			_imgLoader.load(new URLRequest(_faceUrl));
+			_imgLoader.load(new URLRequest(_faceImgUrl));
+		}
+		
+		/**
+		 * EN: If in process of detecting face than <code>true</code>.
+		 *
+		 * @return Face detector status
+		 *
+		 */
+		public static function isBusy():Boolean
+		{
+			return busy;
 		}
 
 		/**
@@ -211,32 +264,25 @@ package com.oskarwicha.images.FaceRecognition
 		private function resizeImage(origB:Bitmap, box:Rectangle, fitOutside:Boolean):Bitmap
 		{
 			var origBD:BitmapData = origB.bitmapData;
-			var resizedBD:BitmapData = new BitmapData(box.width, box.height, true, 0x00000000);
+			var resizedBD:BitmapData = new BitmapData(box.width, box.height, false, 0x00000000);
 			var matrix:Matrix = new Matrix();
-
 			var xRatio:Number = box.width / Number(origBD.width);
 			var yRatio:Number = box.height / Number(origB.height);
-
 			var ratio:Number;
 
 			if (fitOutside)
-				ratio = Math.max(xRatio, yRatio);
+				ratio = (xRatio > yRatio) ? xRatio : yRatio; // Math.max(xRatio, yRatio);
 			else
-				ratio = Math.min(xRatio, yRatio);
+				ratio = (xRatio < yRatio) ? xRatio : yRatio; // Math.min(xRatio, yRatio);
 
 			var wNew:int = int((origBD.width * ratio));
 			var hNew:int = int((origBD.height * ratio));
-			var x:int;
-			var y:int;
-
-			x = int(Math.round((box.width - wNew) * 0.5));
-			y = int(Math.round((box.height - hNew) * 0.5));
-
+			var x:int = int(Math.round((box.width - wNew) * 0.5));
+			var y:int = int(Math.round((box.height - hNew) * 0.5));
 			var clipRect:Rectangle = new Rectangle(x, y, wNew, hNew);
-
-			matrix.scale(ratio, ratio);
 			var resizedB:Bitmap = new Bitmap();
-
+			
+			matrix.scale(ratio, ratio);
 			resizedBD.draw(origBD, matrix, null, null, clipRect, true);
 			resizedB.bitmapData = resizedBD;
 
@@ -245,23 +291,52 @@ package com.oskarwicha.images.FaceRecognition
 
 		private function startPreprocessingLoadedImageFromUrl(e:Event):void
 		{
-			var imb:Bitmap = new Bitmap(new BitmapData(_imgLoader.width, _imgLoader.height, false))
-			imb.bitmapData.draw(_imgLoader);
+			//var imb:Bitmap = new Bitmap(new BitmapData(_imgLoader.width, _imgLoader.height, false))
+			var imb:Bitmap = new Bitmap(e.target.loader.content.bitmapData);
+			_imgLoader.unload();
+			//imb.bitmapData.copyPixels(e.target.loader.content.bitmapData, new Rectangle(0, 0, imb.width, imb.height), new Point(0,0));
+			
 			if (_crop)
-				detectFaceInPicture(imb, imb);
-			var rim:Bitmap = this.resizeImage(imb, new Rectangle(0, 0, FaceRecognition.IDEAL_IMAGE_WIDTH, FaceRecognition.IDEAL_IMAGE_HEIGHT), true);
-			// Przypisuje załadowany i zmniejszony obraz twarzy
-			// do zmiennej publicznej "picture" tej klasy 
-			this.picture = new Picture(rim.bitmapData);
-			// Normalizacja obrazu.
-			if (_normalize)
-				this.picture.normalize();
-			// Wysyła zdarzenie (ang. event) zawierające referencje,
-			// do obiektu z załadowaną twarzą.
-			var ev:FaceEvent = new FaceEvent(FaceEvent.FACE_LOADED);
-			ev.face = this;
-			dispatchEvent(ev);
-			//trace("Sukces - Face.loadFromUrl");
+			{
+				detectFaceInPicture(imb);
+			}
+			else
+			{
+				var rim:Bitmap = this.resizeImage(imb, new Rectangle(0, 0, FaceRecognizer.IDEAL_IMAGE_WIDTH, FaceRecognizer.IDEAL_IMAGE_HEIGHT), true);
+				// Przypisuje załadowany i zmniejszony obraz twarzy
+				// do zmiennej publicznej "picture" tej klasy 
+				this.picture = new Picture(rim.bitmapData);
+				// Normalizacja obrazu.
+				if (_normalize)
+					this.picture.normalize();
+				// Wysyła zdarzenie (ang. event) zawierające referencje,
+				// do obiektu z załadowaną twarzą.
+				var ev:FaceEvent = new FaceEvent(FaceEvent.FACE_LOADED);
+				ev.face = this;
+				dispatchEvent(ev);
+				//trace("Sukces - Face.loadFromUrl");
+			}
+		}
+
+		public function get faceImgUrl():String
+		{
+			return _faceImgUrl;
+		}
+		
+		// IExtensible implementation
+		
+		public function writeExternal(output:IDataOutput):void
+		{
+			output.writeUTF(_classification);
+			output.writeUTF(_description);
+			output.writeUTF(_faceImgUrl);
+		}
+		
+		public function readExternal(input:IDataInput):void 
+		{
+			_classification = input.readUTF();
+			_description = input.readUTF();
+			_faceImgUrl = input.readUTF();
 		}
 	}
 }

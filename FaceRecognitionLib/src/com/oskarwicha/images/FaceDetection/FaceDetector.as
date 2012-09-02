@@ -11,11 +11,18 @@ package com.oskarwicha.images.FaceDetection
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	
-	import jp.maaash.ObjectDetection.HaarCascade;
+	import jp.maaash.ObjectDetection.EyesHaarCascade;
+	import jp.maaash.ObjectDetection.FaceHaarCascade;
 	import jp.maaash.ObjectDetection.ObjectDetector;
 	import jp.maaash.ObjectDetection.ObjectDetectorEvent;
 	import jp.maaash.ObjectDetection.ObjectDetectorOptions;
 
+	/**
+	 * @flowerModelElementId _V7EkIPQwEeG4_d92CzHtyg
+	 */
+	[Event(name="FaceDetector.FACE_CROPPED", type="com.oskarwicha.images.FaceDetection.Events.FaceDetectorEvent")]
+	[Event(name="FaceDetector.NO_FACES_DETECTED", type="com.oskarwicha.images.FaceDetection.Events.FaceDetectorEvent")]
+	[Event(name="FaceDetector.FACE_DETECTION_START", type="com.oskarwicha.images.FaceDetection.Events.FaceDetectorEvent")]
 	/**
 	 * <p>
 	 * EN: Detects one face on image which path was passed to 
@@ -34,9 +41,10 @@ package com.oskarwicha.images.FaceDetection
 	 * nie zostanie wykryta na zdjęciu wysłane zostanie
 	 * zdarzenie <code>FaceDetectorEvent.NO_FACES_DETECTED</code>.
 	 * </p>
-	 *
+	 * 
 	 * @author Oskar Wicha
-	 *
+	 * 
+	 * @flowerModelElementId _V7EkIPQwEeG4_d92CzHtyg
 	 */
 	public class FaceDetector extends EventDispatcher
 	{
@@ -67,8 +75,8 @@ package com.oskarwicha.images.FaceDetection
 		public function FaceDetector(filePath:String = null)
 		{
 			initLoader();
-			initDetector();
-			_debug = true;
+			initFaceDetector();
+			//initEyesDetector();
 			
 			if (filePath != null)
 			{
@@ -79,21 +87,24 @@ package com.oskarwicha.images.FaceDetection
 		private var _cropedFace:Bitmap = new Bitmap();
 		private var _bmpTarget:Bitmap;
 		private var _debug:Boolean = false;
-		private var _detector:ObjectDetector;
+		private var __faceDetector:ObjectDetector;
+		private var __eyesDetector:ObjectDetector;
 		private var _faceImage:Loader;
 		private var _options:ObjectDetectorOptions;
+		private var __isBusy:Boolean = false;
+		
+		private var __tempFaceImg:Bitmap;
 
 		[Inspectable]
-		public function get cropedFace():Bitmap
+		public function get croppedFace():Bitmap
 		{
 			return _cropedFace;
 		}
 
-		public function set cropedFace(value:Bitmap):void
+		public function set croppedFace(value:Bitmap):void
 		{
 			_cropedFace = value;
-			//trace("Wysłano zdarzenie : " + FaceDetectorEvent.FACE_CROPED);
-			dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED));
+			
 		}
 
 		/**
@@ -116,7 +127,30 @@ package com.oskarwicha.images.FaceDetection
 			//_filePath = null;
 			logger("[Rozpoczęcie detekcji twarzy na obrazie załadowanym z obiektu klasy Bitmap]");
 			_bmpTarget = faceBitmap;
-			_detector.detect(_bmpTarget);
+			__faceDetector.detect(_bmpTarget.bitmapData);
+		}
+		
+		/**
+		 * <p>
+		 * EN: Loads image on which face detection will be executed from 
+		 * <code>flash.display.BitmapData</code> object.
+		 * </p>
+		 * 
+		 * <p>
+		 * PL: Ładuje zdjęcie, które ma zostać poddane detekcji twarzy
+		 * z podanego jako parametr obiektu klasy <code>flash.display.BitmapData</code>.
+		 * </p>
+		 * 
+		 * @param faceBitmap Zdjęcie, które ma zostać poddane
+		 * procesowi detekcji twarzy.
+		 *
+		 */
+		public function loadFaceImageFromBitmapData(faceBitmapData:BitmapData):void
+		{
+			//_filePath = null;
+			logger("[Rozpoczęcie detekcji twarzy na obrazie załadowanym z obiektu klasy BitmapData]");
+			_bmpTarget = new Bitmap(faceBitmapData);
+			__faceDetector.detect(faceBitmapData);
 		}
 
 		/**
@@ -136,19 +170,19 @@ package com.oskarwicha.images.FaceDetection
 		 */
 		public function loadFaceImageFromUrl(filePath:String):void
 		{
-			//_filePath = filePath;
-			_faceImage.load(new URLRequest(filePath));
+			if(filePath)
+				_faceImage.load(new URLRequest(filePath));
 		}
 
 		// Funkcje typu getter i setter.
 		public function get objectDetector():ObjectDetector
 		{
-			return _detector;
+			return __faceDetector;
 		}
 
 		public function set objectDetector(value:ObjectDetector):void
 		{
-			_detector = value;
+			__faceDetector = value;
 		}
 
 		private function cropImage(loadBitmap:Bitmap, startPoint:Point, heightSize:int, widthSize:int):Bitmap
@@ -163,61 +197,105 @@ package com.oskarwicha.images.FaceDetection
 			return new Bitmap(cropedBD); //croped Bitmap
 		}
 
-		private function getDetectorOptions(useSoloMode:Boolean = false):ObjectDetectorOptions
+		private function getFaceDetectorOptions():ObjectDetectorOptions
 		{
 			_options = new ObjectDetectorOptions;
-			_options.min_size = 50;
-			_options.startx = ObjectDetectorOptions.INVALID_POS;
-			_options.starty = ObjectDetectorOptions.INVALID_POS;
-			_options.endx = ObjectDetectorOptions.INVALID_POS;
-			_options.endy = ObjectDetectorOptions.INVALID_POS;
-			
-			if(useSoloMode)
-				_options.search_mode = ObjectDetectorOptions.SEARCH_MODE_SOLO;
-
+			_options.min_size = 100;
+			_options.search_mode - ObjectDetectorOptions.SEARCH_MODE_NO_OVERLAP;
+		
+			return _options;
+		}
+		
+		private function getEyesDetectorOptions(x:uint, y:uint, width:uint, height:uint):ObjectDetectorOptions
+		{
+			_options = new ObjectDetectorOptions;
+			_options.scale_factor = 1.2;
+			//_options.search_mode = ObjectDetectorOptions.SEARCH_MODE_DEFAULT;
+			_options.min_size = 20;
+			//_options.startx = x;            /* x = start from leftmost */
+		//	_options.starty = y + (height/5.5); /* y = a few pixels from the top */
+		//	_options.endx =	width;        /* width = same width with the face */
+			//_options.endy = height/2.0;    /* height = 1/2 of face height */
 			return _options;
 		}
 
-		private function initDetector():void
+		private function initFaceDetector():void
 		{
-			_detector = new ObjectDetector;
-			_detector.options = getDetectorOptions();
-			_detector.addEventListener(ObjectDetectorEvent.DETECTION_COMPLETE, function(e:ObjectDetectorEvent):void
+			__faceDetector = new ObjectDetector(new FaceHaarCascade());
+			__faceDetector.options = getFaceDetectorOptions();
+			
+			__faceDetector.addEventListener(ObjectDetectorEvent.DETECTION_START, function(e:ObjectDetectorEvent):void
+			{
+				this._isBusy = true;
+				dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_DETECTION_START));
+			});
+			
+			__faceDetector.addEventListener(ObjectDetectorEvent.DETECTION_COMPLETE, function(e:ObjectDetectorEvent):void
 			{
 				logger("[Odebrano zdarzenie typu ObjectDetectorEvent.COMPLETE]");
 				//_detector.removeEventListener(ObjectDetectorEvent.DETECTION_COMPLETE, arguments.callee);
-
-				if (e.rects)
+				var rects:Vector.<Rectangle> = e.rects;
+				
+				if (rects)
 				{
-					e.rects.forEach(function(r:Rectangle, idx:int, arr:Array):void
+					for each(var r:Rectangle in rects)
 					{
-						// Kopiuje wykadrowaną twarz do 
-						// zmiennej "cropedFace".
-						cropedFace = cropImage(_bmpTarget, new Point(r.x, r.y), r.height, r.width);
-					});
+						// Kopiuje wykadrowaną twarz do zmiennej "cropedFace".
+						croppedFace = cropImage(_bmpTarget, r.topLeft, r.height, r.width);
+						
+						//__eyesDetector.options = getEyesDetectorOptions(0, 0, r.width, r.height);
+						//croppedFace.bitmapData.fillRect(croppedFace.getRect(croppedFace), 0xFF000000 | uint(Math.random()*255)<<8);
+						//__tempFaceImg = cropImage(croppedFace, new Point(0,int(r.height/5.5)), r.height/2.0, r.width);
+						//__eyesDetector.detect(__tempFaceImg.bitmapData);
+						//break;
+						dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED, _cropedFace, r));
+					}
 				}
 				
-				if (e.rects.length == 0)
+				if (!rects.length)
 				{
 					dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.NO_FACES_DETECTED));
-						//trace("Wysłano zdarzenie : " + FaceDetectorEvent.NO_FACES_DETECTED);
+				}
+				this._isBusy = false;
+			});
+		}
+		
+		private function initEyesDetector():void
+		{
+			__eyesDetector = new ObjectDetector(new EyesHaarCascade());
+			__eyesDetector.options = getEyesDetectorOptions(	
+				ObjectDetectorOptions.INVALID_POS,
+				ObjectDetectorOptions.INVALID_POS,
+				ObjectDetectorOptions.INVALID_POS,
+				ObjectDetectorOptions.INVALID_POS);
+			__eyesDetector.addEventListener(ObjectDetectorEvent.DETECTION_START, function(e:ObjectDetectorEvent):void
+			{
+				this._isBusy = true;
+			});
+			__eyesDetector.addEventListener(ObjectDetectorEvent.DETECTION_COMPLETE, function(e:ObjectDetectorEvent):void
+			{
+				//_detector.removeEventListener(ObjectDetectorEvent.DETECTION_COMPLETE, arguments.callee);
+				var rects:Vector.<Rectangle> = e.rects;
+				
+				if (rects)
+				{
+					for each(var r:Rectangle in rects)
+					{
+						//croppedFace = cropImage(croppedFace,r.topLeft,r.height,r.width);
+						__tempFaceImg.bitmapData.fillRect(r, 0xFF000000 | uint(Math.random()*255)<<16);
+						
+					}
+					trace(rects.length + "\n");
+					if(rects.length)
+					{
+						
+						
+						//croppedFace = cropImage(croppedFace,rects[0].topLeft,rects[0].height,rects[0].width);
+						
+						dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED, __tempFaceImg, new Rectangle()));
+					}
 				}
 			});
-			
-			/*var events:Array = [ObjectDetectorEvent.DETECTION_START, ObjectDetectorEvent.HAARCASCADES_LOAD_COMPLETE,
-								ObjectDetectorEvent.HAARCASCADES_LOADING];
-			
-			events.forEach(function(t:String, idx:int, arr:Array):void
-			{
-				_detector.addEventListener(t, function(e:ObjectDetectorEvent):void
-				{
-					logger("\nCzas: " + (new Date) + " " + e.type);
-				});
-			});*/
-			
-			// Plik face.zip zawiera wzorce dzieki, którym możliwa
-			// jest detekcja twarzy na obrazie.
-			_detector.loadHaarCascades("face.zip");
 		}
 
 		private function initLoader():void
@@ -225,7 +303,7 @@ package com.oskarwicha.images.FaceDetection
 			_faceImage = new Loader;
 			_faceImage.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
 			{
-				startDetection();
+				startDetection(e.target.loader.content.bitmapData);
 			});
 		}
 
@@ -239,12 +317,32 @@ package com.oskarwicha.images.FaceDetection
 		}
 
 		// Funkcja używana tylko gdy obraz ładowany jest z pliku
-		private function startDetection():void
+		private function startDetection(bd:BitmapData):void
 		{
-			logger("[Wykonuje funkcje startDetection]");
-			_bmpTarget = new Bitmap(new BitmapData(_faceImage.width, _faceImage.height, false))
-			_bmpTarget.bitmapData.draw(_faceImage);
-			_detector.detect(_bmpTarget);
+			logger("[Wykonuje funkcję startDetection]");
+			_bmpTarget = new Bitmap(bd);
+			__faceDetector.detect(_bmpTarget.bitmapData);
 		}
+
+		[Bindable(event="isBusyChange")]
+		public function get isBusy():Boolean
+		{
+			return this._isBusy;
+		}
+		
+		protected function get _isBusy():Boolean
+		{
+			return __isBusy;
+		}
+		
+		protected function set _isBusy(value:Boolean):void
+		{
+			if(__isBusy !== value)
+			{
+				__isBusy = value;
+				dispatchEvent(new Event("isBusyChange"));
+			}
+		}
+
 	}
 }

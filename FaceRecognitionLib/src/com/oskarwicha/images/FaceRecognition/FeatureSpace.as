@@ -1,5 +1,9 @@
 package com.oskarwicha.images.FaceRecognition
 {
+	import flash.net.registerClassAlias;
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
 
 	/**
 	 * Przechowyje zbiór m.in. wektorów utworzonych w procesie treningu
@@ -11,12 +15,13 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @flowerModelElementId _TpbP4GglEeCqZchJBDddKw
 	 */
-	public class FeatureSpace
+	public class FeatureSpace implements IExternalizable
 	{
 		/**
 		 * Definiuje funkcje używaną do obliczania odległości miedzy
 		 * dwoma wektorami.
-		 *
+		 * 
+		 * @flowerModelElementId _V8ti4PQwEeG4_d92CzHtyg
 		 */
 		public static var EUCLIDEAN_DISTANCE:IDistanceMeasure = new EuclideanDistance();
 
@@ -26,62 +31,68 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function FeatureSpace()
 		{
-			featureSpace = new Vector.<FeatureVector>();
-			classifications = new Vector.<String>();
+			registerClassAlias("FeatureVector", FeatureVector);
+			__featureSpace = new Vector.<FeatureVector>();
+			__classifications = new Vector.<String>();
 		}
 
 		/**
 		 * Wektor z obiektami <code>String</code>
 		 *
 		 */
-		private var classifications:Vector.<String>;
+		private var __classifications:Vector.<String>;
 
 		/**
 		 * Wektor z obiektami <code>FeatureVectors<code>
-		 *
+		 * 
+		 * @flowerModelElementId _V8ti5fQwEeG4_d92CzHtyg
 		 */
-		private var featureSpace:Vector.<FeatureVector>;
-
+		private var __featureSpace:Vector.<FeatureVector>;
+		
 		/**
 		 * Sortuje baze w zależności od odległości wektorów w bazie
-		 *  w stosunku do wektora rozpoznawanej twarzy.
+		 * w stosunku do wektora rozpoznawanej twarzy.
 		 *
 		 * @param measure Obiekt zawierający funkcje do pomiaru
 		 * dystansu między wektorami.
 		 * @param obj Wektor utworzony dla twarzy poddanej rozpoznawaniu
-		 * @return Posorotowana tablica obiektów typu fd_pair
+		 * @return Posorotowany wektor obiektów typu <code>FdPair</code>
 		 */
-		public function orderByDistance(measure:IDistanceMeasure, fv:FeatureVector):Array
+		internal function orderByDistance(measure:IDistanceMeasure, fv:FeatureVector):Vector.<FdPair>
 		{
-			var orderedList:Array = new Array();
-			if (getFeatureSpaceSize() < 1)
+			/*if(!isItCorrectFeatureVectorsLength(fv.featureVectorData.length))
+				throw new Error("Error: Incorrect value of fv.featureVectorData.length." +
+					" All vectors in FeatureSpace need to have equal lengths");*/
+			
+			var orderedList:Vector.<FdPair> = new Vector.<FdPair>();
+			if (this.size < 1)
 				return null;
 
-			const featureSpaceLength:uint = featureSpace.length;
-			var dp:Vector.<di_pair> = new Vector.<di_pair>(featureSpaceLength, true);
+			var featureSpaceLength:uint = __featureSpace.length;
+			var dp:Vector.<DiPair> = new Vector.<DiPair>(featureSpaceLength, true);
+			var dpi:DiPair;
 
 			// Dla każdego z wektorów w "featureSpace" tworzy 
-			// obiek klasy "di_pair" przechowyjący pare obiektów 
+			// obiek klasy "DiPair" przechowyjący pare obiektów 
 			// (jeden klasy FeatureVector i drugi klasy Number z
 			// odpowiadającym dla tego wektora dystansem od
 			// wektora twarzy rozpoznawanej).
-			for (var i:int = 0; i < featureSpaceLength; ++i)
+			for (var i:uint = 0; i < featureSpaceLength; ++i)
 			{
-				dp[i] = new di_pair();
-				dp[i].obj = featureSpace[i];
-				dp[i].dist = measure.DistanceBetween(fv, featureSpace[i]);
+				dp[i] = dpi = new DiPair();
+				dpi.dist = measure.distanceBetween(fv, dpi.fVec = __featureSpace[i]);
 			}
 
-			dp.sort(di_pair_compare);
+			dp.sort(DiPair.compare);
 
 			i = featureSpaceLength;
 			while (i--)
 			{
-				var fd:fd_pair = new fd_pair();
-				fd.face = dp[i].obj.getFace();
-				fd.dist = dp[i].dist;
-				orderedList[i] = fd;
-					//trace(fd.dist + " -  " + fd.face.classification);
+				var fd:FdPair = orderedList[i] = new FdPair();
+				dpi = dp[i];
+				fd.face = dpi.fVec.face;
+				fd.dist = dpi.dist;
+			    //trace(fd.dist + " -  " + fd.face.classification);
 			}
 
 			return orderedList;
@@ -94,11 +105,19 @@ package com.oskarwicha.images.FaceRecognition
 		 * @return rozmiar feature space
 		 *
 		 */
-		internal function getFeatureSpaceSize():uint
+		internal function get size():uint
 		{
-			return featureSpace.length;
+			return __featureSpace.length;
 		}
-
+		
+		private function isItCorrectFeatureVectorsLength(length:uint):Boolean
+		{
+			if(__featureSpace.length)
+				return __featureSpace[0].featureVectorData.length == length;
+			else
+				return true;
+		}
+		
 		/**
 		 * Dodaje obiekt klasy <code>Face</code>  oraz tablice
 		 * zawierającą dane wektora do wewnętrznej bazy tego
@@ -112,17 +131,21 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		internal final function insertIntoDatabase(face:Face, featureVector:Vector.<Number>):void
 		{
+			/*if(!isItCorrectFeatureVectorsLength(featureVector.length))
+				throw new Error("Error: Incorrect value of featureVector.length." +
+					" All vectors in FeatureSpace need to have equal lengths");*/
+			
 			// Prawda jeśli tablica classifications nie zawiera
 			// takiego obiektu jak face.classification.
-			if (classifications.indexOf(face.classification) == -1)
-				classifications[classifications.length] = face.classification;
+			if (__classifications.indexOf(face.classification) == -1)
+				__classifications[__classifications.length] = face.classification;
 
-			var clas:int = classifications.indexOf(face.classification);
+			var clas:int = __classifications.indexOf(face.classification);
 			var obj:FeatureVector = new FeatureVector();
-			obj.setClassification(clas);
-			obj.setFace(face);
-			obj.setFeatureVector(featureVector);
-			featureSpace[featureSpace.length] = obj;
+			obj.featureVectorData = featureVector;
+			obj.classification = clas;
+			obj.face = face;
+			__featureSpace[__featureSpace.length] = obj;
 		}
 
 		/**
@@ -139,72 +162,73 @@ package com.oskarwicha.images.FaceRecognition
 		 * poddanej rozpoznawaniu.
 		 *
 		 */
-		internal final function knn(measure:IDistanceMeasure, obj:FeatureVector, nn:int):String
+		internal final function knn(measure:IDistanceMeasure, obj:FeatureVector, nn:uint, distTreshold:Number):DiPair
 		{
-			if (getFeatureSpaceSize() < 1)
+			if (!__featureSpace.length)
 				return null;
-
-			const featureSpaceLength:uint = featureSpace.length;
-			var dp:Vector.<di_pair> = new Vector.<di_pair>(featureSpaceLength, true);
-
+			
+			/*if(!isItCorrectFeatureVectorsLength(obj.featureVectorData.length))
+				throw new Error("Error: Incorrect value of obj.featureVectorData.length." +
+					" All vectors in FeatureSpace need to have equal lengths");*/
+			
+			var featureSpaceLength:uint = __featureSpace.length;
+			var dp:Vector.<DiPair> = new Vector.<DiPair>(featureSpaceLength, true);
+			var dpi:DiPair;
+			
 			for (var i:int = 0; i < featureSpaceLength; ++i)
 			{
-				dp[i] = new di_pair();
-				dp[i].obj = featureSpace[i];
-				dp[i].dist = measure.DistanceBetween(obj, featureSpace[i]);
+				dp[i] = dpi = new DiPair();
+				dpi.fVec = __featureSpace[i];
+				dpi.dist = measure.distanceBetween(obj, dpi.fVec);
 			}
 
-			dp.sort(di_pair_compare);
+			dp.sort(DiPair.compare);
 
-			const classificationsLength:uint = classifications.length;
+			var classificationsLength:uint = __classifications.length;
 			var accm:Vector.<uint> = new Vector.<uint>(classificationsLength, true);
-
-			for (i = 0; i < classificationsLength; ++i)
-				accm[i] = 0;
-
-			var max:int = 0;
-			var ind:int = 0;
+			var max:uint = 0;
+			var ind:int = -1;
+			var closest:uint;
+			
+			if(nn > featureSpaceLength) 
+				nn = featureSpaceLength;
+			
 			// Znajduje najczęściej występującą klasyfikacje w zbiorze "nn" 
 			// najbardziej podobnych twarzy.
-			for (i = 0; i < nn; ++i)
+			for (i = nn-1; i >= 0; --i)
 			{
-				var c:int = dp[i].obj.getClassification();
-				accm[c]++;
-				if (accm[c] > max)
+				dpi = dp[i];
+				
+				if(dpi.dist > distTreshold)
+					continue;
+				
+				var c:uint = dpi.fVec.classification;
+				
+				if (++accm[c] > max)
 				{
-					max = accm[c];
-					ind = c;
+					max = accm[ind = c];
+					closest = i;
 				}
 			}
-
-			return classifications[ind];
+			
+			if(ind != -1)
+				return dp[closest];
+			else
+				return null;
 		}
-
-		// Służy do porównaniea dwóch obiektów klasy "di_pair"
-		private final function di_pair_compare(arg0:di_pair, arg1:di_pair):int
+		
+		// IExtensible implementation
+		
+		public function writeExternal(output:IDataOutput):void
 		{
-			return int(int(arg0.dist) - int(arg1.dist));
+			output.writeObject(__classifications);
+			output.writeObject(__featureSpace);
+		}
+		
+		public function readExternal(input:IDataInput):void 
+		{
+			__classifications = Vector.<String>(input.readObject());
+			__featureSpace = Vector.<FeatureVector>(input.readObject());
 		}
 	}
-
 }
-
-import com.oskarwicha.images.FaceRecognition.Face;
-import com.oskarwicha.images.FaceRecognition.FeatureVector;
-
-/* Klasa pomocnicza  */
-class di_pair
-{
-	public var dist:Number;
-	public var obj:FeatureVector;
-}
-;
-
-/* Klasa pomocnicza  */
-class fd_pair
-{
-
-	public var dist:Number;
-	public var face:Face;
-}
-;

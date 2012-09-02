@@ -45,46 +45,60 @@ package com.oskarwicha.images.FaceRecognition
 		public static function hypot(a:Number, b:Number):Number
 		{
 			var r:Number;
-			if (Maths.abs(b) < Maths.abs(a))
+			var abs_a:Number = (a * (1.0 - (int(a < 0.0) << 1))); // Maths.abs(a)
+			var abs_b:Number = (b * (1.0 - (int(b < 0.0) << 1))); // Maths.abs(b)
+			
+			if ( abs_b < abs_a )
 			{
 				r = b / a;
-				r = Maths.abs(a) * Math.sqrt(1 + r * r);
+				return abs_a * Math.sqrt(1.0 + r * r);
 			}
-			else if (b != 0)
+			else if (b != 0.0)
 			{
 				r = a / b;
-				r = Maths.abs(b) * Math.sqrt(1 + r * r);
+				return abs_b * Math.sqrt(1.0 + r * r);
 			}
 			else
 			{
 				return 0.0;
 			}
-			return r;
 		}
 
-		public static function make1DVector(m:int):Vector.<Number>
+		public static function make1DVector(m:uint):Vector.<Number>
 		{
-			var vec:Vector.<Number> = new Vector.<Number>(m, true);
+			//var vec:Vector.<Number> = new Vector.<Number>(m, true);
 			/*for (var i:int = 0; i < m; ++i)
 			{
 				vec[i] = 0.0;
 			}*/
-			return vec;
+			return new Vector.<Number>(m, true);
 		}
 
 		/**
 		* Creates a zeroed out 2D Vector
 		*/
-		public static function make2DVector(m:int, n:int):Vector.<Vector.<Number>>
+		public static function make2DVector(m:uint, n:uint):Vector.<Vector.<Number>>
 		{
 			var vec:Vector.<Vector.<Number>> = new Vector.<Vector.<Number>>(m, true);
-			for (var i:int = 0; i < m; ++i)
+			var i:uint = 0;
+			
+			if(!(m % 4))
 			{
-				vec[i] = new Vector.<Number>(n, true);
-				/*for (var j:int = 0; j < n; ++j)
+				// Unrolled version
+				while (i < m)
 				{
-					vec[i][j] = 0.0;
-				}*/
+					vec[i++] = new Vector.<Number>(n, true);
+					vec[i++] = new Vector.<Number>(n, true);
+					vec[i++] = new Vector.<Number>(n, true);
+					vec[i++] = new Vector.<Number>(n, true);
+				}
+			}
+			else
+			{
+				while (i < m)
+				{
+					vec[i++] = new Vector.<Number>(n, true);
+				}
 			}
 			return vec;
 		}
@@ -98,9 +112,9 @@ package com.oskarwicha.images.FaceRecognition
 		 *
 		 * @see http://wiki.joa-ebert.com/index.php/Avoiding_Denormals
 		 */
-		public static function normalize(value:Number):void
+		public static function normalize(value:Number):Number
 		{
-			value = value + 1e-18 - 1e-18;
+			return value + 1e-18 - 1e-18;
 		}
 	}
 }

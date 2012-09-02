@@ -10,6 +10,6 @@ package com.oskarwicha.images.FaceRecognition
 	 */
 	internal interface IDistanceMeasure
 	{
-		function DistanceBetween(obj1:FeatureVector, obj2:FeatureVector):Number;
+		function distanceBetween(obj1:FeatureVector, obj2:FeatureVector):Number;
 	}
 }

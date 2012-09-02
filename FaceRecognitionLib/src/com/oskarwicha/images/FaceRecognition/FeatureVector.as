@@ -1,5 +1,8 @@
 package com.oskarwicha.images.FaceRecognition
 {
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
 
 	/**
 	 * Klasa ta zawiera : </br>
@@ -13,7 +16,7 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @flowerModelElementId _TpndIGglEeCqZchJBDddKw
 	 */
-	public class FeatureVector
+	internal class FeatureVector implements IExternalizable
 	{
 		/**
 		 * Konstruktor
@@ -21,14 +24,14 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		public function FeatureVector()
 		{
-			//puste
 		}
 
-		private var classification:int;
-
-		private var face:Face;
-
-		private var featureVector:Vector.<Number>;
+		private var __classification:uint;
+		/**
+		 * @flowerModelElementId _V82s0vQwEeG4_d92CzHtyg
+		 */
+		private var __face:Face;
+		private var __featureVectorData:Vector.<Number>;
 
 		/**
 		 * Liczba stałoprzecinkowa identyfikująca wektor.
@@ -36,9 +39,9 @@ package com.oskarwicha.images.FaceRecognition
 		 * @return Klasyfikacja wektora
 		 *
 		 */
-		internal function getClassification():int
+		internal function get classification():uint
 		{
-			return classification;
+			return __classification;
 		}
 
 		/**
@@ -49,9 +52,9 @@ package com.oskarwicha.images.FaceRecognition
 		 * obiekcie <code>FeatureVector<code>.
 		 *
 		 */
-		internal function getFace():Face
+		internal function get face():Face
 		{
-			return face;
+			return __face;
 		}
 
 		/**
@@ -60,9 +63,9 @@ package com.oskarwicha.images.FaceRecognition
 		 * @return Tablica z obiektami typu <code>Number</code>.
 		 *
 		 */
-		internal function getFeatureVector():Vector.<Number>
+		internal function get featureVectorData():Vector.<Number>
 		{
-			return featureVector;
+			return __featureVectorData;
 		}
 
 		/**
@@ -71,9 +74,9 @@ package com.oskarwicha.images.FaceRecognition
 		 * @param classification Klasyfikacja wektora.
 		 *
 		 */
-		internal function setClassification(classification:int):void
+		internal function set classification(classification:uint):void
 		{
-			this.classification = classification;
+			__classification = classification;
 		}
 
 		/**
@@ -83,9 +86,9 @@ package com.oskarwicha.images.FaceRecognition
 		 * @param face
 		 *
 		 */
-		internal function setFace(face:Face):void
+		internal function set face(face:Face):void
 		{
-			this.face = face;
+			__face = face;
 		}
 
 		/**
@@ -96,9 +99,25 @@ package com.oskarwicha.images.FaceRecognition
 		 * <code>Number</code>.
 		 *
 		 */
-		internal function setFeatureVector(featureVector:Vector.<Number>):void
+		internal function set featureVectorData(featureVector:Vector.<Number>):void
 		{
-			this.featureVector = featureVector;
+			__featureVectorData = featureVector;
+		}
+		
+		// IExtensible implementation
+		
+		public function writeExternal(output:IDataOutput):void
+		{
+			output.writeUnsignedInt(__classification);
+			output.writeObject(__featureVectorData);
+			output.writeObject(__face);
+		}
+		
+		public function readExternal(input:IDataInput):void 
+		{
+			__classification = input.readUnsignedInt();
+			__featureVectorData = Vector.<Number>(input.readObject());
+			__face = input.readObject() as Face;
 		}
 	}
 }

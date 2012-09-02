@@ -41,7 +41,7 @@ package com.oskarwicha.images.FaceRecognition
 		conditioned, or even singular, so the validity of the equation
 		A = V*D*inverse(V) depends upon V.cond().
 	**/
-	public class EigenvalueDecomposition
+	internal class EigenvalueDecomposition
 	{
 		/* ------------------------
 		   Constructor
@@ -51,35 +51,37 @@ package com.oskarwicha.images.FaceRecognition
 		@param A    Square matrix
 		@return     Structure to access D and V.
 		*/
-
 		public function EigenvalueDecomposition(Arg:KMatrix)
 		{
 			var A:Vector.<Vector.<Number>> = Arg.getVector();
-			n = Arg.getColumnDimension();
+			__n = Arg.getColumnDimension();
 
-			V = Maths.make2DVector(n, n);
-			d = Maths.make1DVector(n);
-			e = Maths.make1DVector(n);
+			__V = Maths.make2DVector(__n, __n);
+			__d = new Vector.<Number>(__n);
+			__e = new Vector.<Number>(__n);
 			var i:int = 0;
 			var j:int = 0;
 			var k:int = 0;
 
-			issymmetric = true;
-			for (j = 0; (j < n) && issymmetric; ++j)
+			__issymmetric = true;
+			for (j = 0; (j < __n) && __issymmetric; ++j)
 			{
-				for (i = 0; (i < n) && issymmetric; ++i)
+				for (i = 0; (i < __n) && __issymmetric; ++i)
 				{
-					issymmetric = (A[i][j] == A[j][i]);
+					__issymmetric = (A[i][j] == A[j][i]);
 				}
 			}
 
-			if (issymmetric)
+			if (__issymmetric)
 			{
-				for (i = 0; i < n; ++i)
+				for (i = 0; i < __n; ++i)
 				{
-					for (j = 0; j < n; ++j)
+					var Ai:Vector.<Number> = A[i];
+					var Vi:Vector.<Number> = __V[i];
+					
+					for (j = 0; j < __n; ++j)
 					{
-						V[i][j] = A[i][j];
+						Vi[j] = Ai[j];
 					}
 				}
 
@@ -88,18 +90,20 @@ package com.oskarwicha.images.FaceRecognition
 
 				// Diagonalize.
 				tql2();
-
 			}
 			else
 			{
-				H = Maths.make2DVector(n, n);
-				ort = Maths.make1DVector(n);
+				__H = Maths.make2DVector(__n, __n);
+				__ort = new Vector.<Number>(__n);
 
-				for (j = 0; j < n; ++j)
+				for (i = 0; i < __n; ++i)
 				{
-					for (i = 0; i < n; ++i)
+					var Ai2:Vector.<Number> = A[i];
+					var Hi:Vector.<Number> = __H[i];
+					
+					for (j = 0; j < __n; ++j)
 					{
-						H[i][j] = A[i][j];
+						Hi[j] = Ai2[j];
 					}
 				}
 
@@ -111,32 +115,30 @@ package com.oskarwicha.images.FaceRecognition
 			}
 		}
 
-		/** Array for internal storage of nonsymmetric Hessenberg form.
+		/** Vector for internal storage of nonsymmetric Hessenberg form.
 		@serial internal storage of nonsymmetric Hessenberg form.
 		*/
-		private var H:Vector.<Vector.<Number>>;
+		private var __H:Vector.<Vector.<Number>>;
 
-		/** Array for internal storage of eigenvectors.
+		/** Vector for internal storage of eigenvectors.
 		@serial internal storage of eigenvectors.
 		*/
-		private var V:Vector.<Vector.<Number>>;
-		private var cdivi:Number = 0;
-
+		private var __V:Vector.<Vector.<Number>>;
+		private var __cdivi:Number = 0.0;
 
 		// Complex scalar division.
+		private var __cdivr:Number = 0.0;
 
-		private var cdivr:Number = 0;
-
-		/** Arrays for internal storage of eigenvalues.
+		/** Vectors for internal storage of eigenvalues.
 		@serial internal storage of eigenvalues.
 		*/
-		private var d:Vector.<Number>;
-		private var e:Vector.<Number>;
+		private var __d:Vector.<Number>;
+		private var __e:Vector.<Number>;
 
 		/** Symmetry flag.
 		@serial internal symmetry flag.
 		*/
-		private var issymmetric:Boolean;
+		private var __issymmetric:Boolean;
 
 		/* ------------------------
 		   Class variables
@@ -145,12 +147,12 @@ package com.oskarwicha.images.FaceRecognition
 		/** Row and column dimension (square matrix).
 		@serial matrix dimension.
 		*/
-		private var n:int;
+		private var __n:int;
 
 		/** Working storage for nonsymmetric algorithm.
 		@serial working storage for nonsymmetric algorithm.
 		*/
-		private var ort:Vector.<Number>;
+		private var __ort:Vector.<Number>;
 
 		/** Return the block diagonal eigenvalue matrix
 		@return     D
@@ -158,26 +160,32 @@ package com.oskarwicha.images.FaceRecognition
 
 		public function getD():KMatrix
 		{
-			var X:KMatrix = new KMatrix(n, n);
+			var X:KMatrix = new KMatrix(__n, __n);
 			var D:Vector.<Vector.<Number>> = X.getVector();
 			var i:int = 0;
 			var j:int = 0;
 			var k:int = 0;
-			for (i = 0; i < n; ++i)
+			
+			for (i = 0; i < __n; ++i)
 			{
-				for (j = 0; j < n; ++j)
+				var Di:Vector.<Number> = D[i];
+				for (j = 0; j < __n; ++j)
 				{
-					D[i][j] = 0.0;
+					Di[j] = 0.0;
 				}
-				D[i][i] = d[i];
-				if (e[i] > 0)
+								
+				Di[i] = __d[i];
+				
+				var ei:Number = __e[i];
+				if (ei > 0)
 				{
-					D[i][int(i + 1)] = e[i];
+					Di[uint(i + 1)] = ei;
 				}
-				else if (e[i] < 0)
+				else if (ei < 0)
 				{
-					D[i][int(i - 1)] = e[i];
+					Di[uint(i - 1)] = ei;
 				}
+				//D[i] = Di;
 			}
 			return X;
 		}
@@ -188,7 +196,7 @@ package com.oskarwicha.images.FaceRecognition
 
 		public function getImagEigenvalues():Vector.<Number>
 		{
-			return e;
+			return __e;
 		}
 
 		/** Return the real parts of the eigenvalues
@@ -197,7 +205,7 @@ package com.oskarwicha.images.FaceRecognition
 
 		public function getRealEigenvalues():Vector.<Number>
 		{
-			return d;
+			return __d;
 		}
 
 		/** Return the eigenvector matrix
@@ -206,7 +214,7 @@ package com.oskarwicha.images.FaceRecognition
 
 		public function getV():KMatrix
 		{
-			return KMatrix.makeUsingVector(V, n, n);
+			return KMatrix.makeUsingVector(__V, __n, __n);
 		}
 
 		/* ------------------------
@@ -217,19 +225,20 @@ package com.oskarwicha.images.FaceRecognition
 		{
 			var r:Number = 0;
 			var d:Number = 0;
+			
 			if (Maths.abs(yr) > Maths.abs(yi))
 			{
 				r = yi / yr;
 				d = yr + r * yi;
-				cdivr = (xr + r * xi) / d;
-				cdivi = (xi - r * xr) / d;
+				__cdivr = (xr + r * xi) / d;
+				__cdivi = (xi - r * xr) / d;
 			}
 			else
 			{
 				r = yr / yi;
 				d = yi + r * yr;
-				cdivr = (r * xr + xi) / d;
-				cdivi = (r * xi - xr) / d;
+				__cdivr = (r * xr + xi) / d;
+				__cdivi = (r * xi - xr) / d;
 			}
 		}
 
@@ -246,31 +255,35 @@ package com.oskarwicha.images.FaceRecognition
 
 			// Initialize
 
-			var nn:int = this.n;
+			var nn:int = this.__n;
 			var n:int = nn - 1;
 			var low:int = 0;
 			var high:int = nn - 1;
 			var eps:Number = Math.pow(2.0, -52.0);
-			Maths.normalize(eps);
+			eps = Maths.normalize(eps);
 			var exshift:Number = 0.0;
 			var p:Number = 0, q:Number = 0, r:Number = 0, s:Number = 0, z:Number = 0, t:Number, w:Number, x:Number, y:Number;
-			var i:int = 0;
-			var j:int = 0;
-			var k:int = 0;
-			var l:int = 0;
+			var i:uint = 0;
+			var j:uint = 0;
+			var k:uint = 0;
+			var l:uint = 0;
 			// Store roots isolated by balanc and compute matrix norm
 
 			var norm:Number = 0.0;
-			for (i = 0; i < nn; i++)
+			for (i = 0; i < nn; ++i)
 			{
+				var Hi:Vector.<Number> = __H[i];
+				
 				if (i < low || i > high)
 				{
-					d[i] = H[i][i];
-					e[i] = 0.0;
+					__d[i] = Hi[i];
+					__e[i] = 0.0;
 				}
-				for (j = Math.max(i - 1, 0); j < nn; j++)
+				
+				j = (i > 1) ? i-1 : 0;
+				while (j < nn)
 				{
-					norm = norm + Maths.abs(H[i][j]);
+					norm += Maths.abs(Hi[j++]);
 				}
 			}
 
@@ -279,18 +292,17 @@ package com.oskarwicha.images.FaceRecognition
 			var iter:int = 0;
 			while (n >= low)
 			{
-
 				// Look for single small sub-diagonal element
-
 				l = n;
 				while (l > low)
 				{
-					s = Maths.abs(H[l - 1][l - 1]) + Maths.abs(H[l][l]);
+					s = Maths.abs(__H[l - 1][l - 1]) + Maths.abs(__H[l][l]);
 					if (s == 0.0)
 					{
 						s = norm;
 					}
-					if (Maths.abs(H[l][l - 1]) < eps * s)
+					
+					if (Maths.abs(__H[l][l - 1]) < eps * s)
 					{
 						break;
 					}
@@ -302,24 +314,20 @@ package com.oskarwicha.images.FaceRecognition
 
 				if (l == n)
 				{
-					H[n][n] = H[n][n] + exshift;
-					d[n] = H[n][n];
-					e[n] = 0.0;
+					__d[n] = __H[n][n] += exshift;
+					__e[n] = 0.0;
 					n--;
 					iter = 0;
-
-						// Two roots found
-
+					// Two roots found
 				}
 				else if (l == n - 1)
 				{
-					w = H[n][n - 1] * H[n - 1][n];
-					p = (H[n - 1][n - 1] - H[n][n]) / 2.0;
+					w = __H[n][n - 1] * __H[n - 1][n];
+					p = (__H[n - 1][n - 1] - __H[n][n]) / 2.0;
 					q = p * p + w;
 					z = Math.sqrt(Maths.abs(q));
-					H[n][n] = H[n][n] + exshift;
-					H[n - 1][n - 1] = H[n - 1][n - 1] + exshift;
-					x = H[n][n];
+					x = __H[n][n] += exshift;
+					__H[n - 1][n - 1] += exshift;
 
 					// Real pair
 
@@ -333,47 +341,50 @@ package com.oskarwicha.images.FaceRecognition
 						{
 							z = p - z;
 						}
-						d[n - 1] = x + z;
-						d[n] = d[n - 1];
+						__d[n - 1] = x + z;
+						__d[n] = __d[n - 1];
 						if (z != 0.0)
 						{
-							d[n] = x - w / z;
+							__d[n] = x - w / z;
 						}
-						e[n - 1] = 0.0;
-						e[n] = 0.0;
-						x = H[n][n - 1];
+						__e[n - 1] = 0.0;
+						__e[n] = 0.0;
+						x = __H[n][n - 1];
 						s = Maths.abs(x) + Maths.abs(z);
 						p = x / s;
 						q = z / s;
-						r = Math.sqrt(p * p + q * q);
+						r = Maths.hypot(p, q); //Math.sqrt(p * p + q * q);
 						p = p / r;
 						q = q / r;
 
 						// Row modification
-
-						for (j = n - 1; j < nn; j++)
+						var Hn1:Vector.<Number> = __H[n-1];
+						var Hn:Vector.<Number> = __H[n];
+						for (j = n - 1; j < nn; ++j)
 						{
-							z = H[n - 1][j];
-							H[n - 1][j] = q * z + p * H[n][j];
-							H[n][j] = q * H[n][j] - p * z;
+							z = Hn1[j];
+							Hn1[j] = q * z + p * Hn[j];
+							Hn[j] = q * Hn[j] - p * z;
 						}
-
+						
 						// Column modification
 
-						for (i = 0; i <= n; i++)
+						for (i = 0; i <= n; ++i)
 						{
-							z = H[i][n - 1];
-							H[i][n - 1] = q * z + p * H[i][n];
-							H[i][n] = q * H[i][n] - p * z;
+							Hi = __H[i];
+							z = Hi[n - 1];
+							Hi[n - 1] = q * z + p * Hi[n];
+							Hi[n] = q * Hi[n] - p * z;
 						}
 
 						// Accumulate transformations
 
-						for (i = low; i <= high; i++)
+						for (i = low; i <= high; ++i)
 						{
-							z = V[i][n - 1];
-							V[i][n - 1] = q * z + p * V[i][n];
-							V[i][n] = q * V[i][n] - p * z;
+							var Vi:Vector.<Number> = __V[i];
+							z = Vi[n - 1];
+							Vi[n - 1] = q * z + p * Vi[n];
+							Vi[n] = q * Vi[n] - p * z;
 						}
 
 							// Complex pair
@@ -381,10 +392,10 @@ package com.oskarwicha.images.FaceRecognition
 					}
 					else
 					{
-						d[n - 1] = x + p;
-						d[n] = x + p;
-						e[n - 1] = z;
-						e[n] = -z;
+						__d[n - 1] = x + p;
+						__d[n] = x + p;
+						__e[n - 1] = z;
+						__e[n] = -z;
 					}
 					n = n - 2;
 					iter = 0;
@@ -397,13 +408,13 @@ package com.oskarwicha.images.FaceRecognition
 
 					// Form shift
 
-					x = H[n][n];
+					x = __H[n][n];
 					y = 0.0;
 					w = 0.0;
 					if (l < n)
 					{
-						y = H[n - 1][n - 1];
-						w = H[n][n - 1] * H[n - 1][n];
+						y = __H[n - 1][n - 1];
+						w = __H[n][n - 1] * __H[n - 1][n];
 					}
 
 					// Wilkinson's original ad hoc shift
@@ -413,9 +424,9 @@ package com.oskarwicha.images.FaceRecognition
 						exshift += x;
 						for (i = low; i <= n; i++)
 						{
-							H[i][i] -= x;
+							__H[i][i] -= x;
 						}
-						s = Maths.abs(H[n][n - 1]) + Maths.abs(H[n - 1][n - 2]);
+						s = Maths.abs(__H[n][n - 1]) + Maths.abs(__H[n - 1][n - 2]);
 						x = y = 0.75 * s;
 						w = -0.4375 * s * s;
 					}
@@ -436,7 +447,7 @@ package com.oskarwicha.images.FaceRecognition
 							s = x - w / ((y - x) / 2.0 + s);
 							for (i = low; i <= n; i++)
 							{
-								H[i][i] -= s;
+								__H[i][i] -= s;
 							}
 							exshift += s;
 							x = y = w = 0.964;
@@ -450,12 +461,12 @@ package com.oskarwicha.images.FaceRecognition
 					var m:int = n - 2;
 					while (m >= l)
 					{
-						z = H[m][m];
+						z = __H[m][m];
 						r = x - z;
 						s = y - z;
-						p = (r * s - w) / H[m + 1][m] + H[m][m + 1];
-						q = H[m + 1][m + 1] - z - r - s;
-						r = H[m + 2][m + 1];
+						p = (r * s - w) / __H[m + 1][m] + __H[m][m + 1];
+						q = __H[m + 1][m + 1] - z - r - s;
+						r = __H[m + 2][m + 1];
 						s = Maths.abs(p) + Maths.abs(q) + Maths.abs(r);
 						p = p / s;
 						q = q / s;
@@ -464,7 +475,7 @@ package com.oskarwicha.images.FaceRecognition
 						{
 							break;
 						}
-						if (Maths.abs(H[m][m - 1]) * (Maths.abs(q) + Maths.abs(r)) < eps * (Maths.abs(p) * (Maths.abs(H[m - 1][m - 1]) + Maths.abs(z) + Maths.abs(H[m + 1][m + 1]))))
+						if (Maths.abs(__H[m][m - 1]) * (Maths.abs(q) + Maths.abs(r)) < eps * (Maths.abs(p) * (Maths.abs(__H[m - 1][m - 1]) + Maths.abs(z) + Maths.abs(__H[m + 1][m + 1]))))
 						{
 							break;
 						}
@@ -473,10 +484,10 @@ package com.oskarwicha.images.FaceRecognition
 
 					for (i = m + 2; i <= n; i++)
 					{
-						H[i][i - 2] = 0.0;
+						__H[i][i - 2] = 0.0;
 						if (i > m + 2)
 						{
-							H[i][i - 3] = 0.0;
+							__H[i][i - 3] = 0.0;
 						}
 					}
 
@@ -487,9 +498,9 @@ package com.oskarwicha.images.FaceRecognition
 						var notlast:Boolean = (k != n - 1);
 						if (k != m)
 						{
-							p = H[k][k - 1];
-							q = H[k + 1][k - 1];
-							r = (notlast ? H[k + 2][k - 1] : 0.0);
+							p = __H[k][k - 1];
+							q = __H[k + 1][k - 1];
+							r = (notlast ? __H[k + 2][k - 1] : 0.0);
 							x = Maths.abs(p) + Maths.abs(q) + Maths.abs(r);
 							if (x != 0.0)
 							{
@@ -511,11 +522,11 @@ package com.oskarwicha.images.FaceRecognition
 						{
 							if (k != m)
 							{
-								H[k][k - 1] = -s * x;
+								__H[k][k - 1] = -s * x;
 							}
 							else if (l != m)
 							{
-								H[k][k - 1] = -H[k][k - 1];
+								__H[k][k - 1] = -__H[k][k - 1];
 							}
 							p = p + s;
 							x = p / s;
@@ -528,42 +539,42 @@ package com.oskarwicha.images.FaceRecognition
 
 							for (j = k; j < nn; j++)
 							{
-								p = H[k][j] + q * H[k + 1][j];
+								p = __H[k][j] + q * __H[k + 1][j];
 								if (notlast)
 								{
-									p = p + r * H[k + 2][j];
-									H[k + 2][j] = H[k + 2][j] - p * z;
+									p = p + r * __H[k + 2][j];
+									__H[k + 2][j] = __H[k + 2][j] - p * z;
 								}
-								H[k][j] = H[k][j] - p * x;
-								H[k + 1][j] = H[k + 1][j] - p * y;
+								__H[k][j] = __H[k][j] - p * x;
+								__H[k + 1][j] = __H[k + 1][j] - p * y;
 							}
 
 							// Column modification
 
 							for (i = 0; i <= Math.min(n, k + 3); i++)
 							{
-								p = x * H[i][k] + y * H[i][k + 1];
+								p = x * __H[i][k] + y * __H[i][k + 1];
 								if (notlast)
 								{
-									p = p + z * H[i][k + 2];
-									H[i][k + 2] = H[i][k + 2] - p * r;
+									p = p + z * __H[i][k + 2];
+									__H[i][k + 2] = __H[i][k + 2] - p * r;
 								}
-								H[i][k] = H[i][k] - p;
-								H[i][k + 1] = H[i][k + 1] - p * q;
+								__H[i][k] = __H[i][k] - p;
+								__H[i][k + 1] = __H[i][k + 1] - p * q;
 							}
 
 							// Accumulate transformations
 
 							for (i = low; i <= high; i++)
 							{
-								p = x * V[i][k] + y * V[i][k + 1];
+								p = x * __V[i][k] + y * __V[i][k + 1];
 								if (notlast)
 								{
-									p = p + z * V[i][k + 2];
-									V[i][k + 2] = V[i][k + 2] - p * r;
+									p = p + z * __V[i][k + 2];
+									__V[i][k + 2] = __V[i][k + 2] - p * r;
 								}
-								V[i][k] = V[i][k] - p;
-								V[i][k + 1] = V[i][k + 1] - p * q;
+								__V[i][k] = __V[i][k] - p;
+								__V[i][k + 1] = __V[i][k + 1] - p * q;
 							}
 						} // (s != 0)
 					} // k loop
@@ -579,24 +590,24 @@ package com.oskarwicha.images.FaceRecognition
 
 			for (n = nn - 1; n >= 0; n--)
 			{
-				p = d[n];
-				q = e[n];
+				p = __d[n];
+				q = __e[n];
 
 				// Real vector
 
 				if (q == 0)
 				{
 					l = n;
-					H[n][n] = 1.0;
+					__H[n][n] = 1.0;
 					for (i = n - 1; i >= 0; i--)
 					{
-						w = H[i][i] - p;
+						w = __H[i][i] - p;
 						r = 0.0;
 						for (j = l; j <= n; j++)
 						{
-							r = r + H[i][j] * H[j][n];
+							r = r + __H[i][j] * __H[j][n];
 						}
-						if (e[i] < 0.0)
+						if (__e[i] < 0.0)
 						{
 							z = w;
 							s = r;
@@ -604,15 +615,15 @@ package com.oskarwicha.images.FaceRecognition
 						else
 						{
 							l = i;
-							if (e[i] == 0.0)
+							if (__e[i] == 0.0)
 							{
 								if (w != 0.0)
 								{
-									H[i][n] = -r / w;
+									__H[i][n] = -r / w;
 								}
 								else
 								{
-									H[i][n] = -r / (eps * norm);
+									__H[i][n] = -r / (eps * norm);
 								}
 
 									// Solve real equations
@@ -620,29 +631,29 @@ package com.oskarwicha.images.FaceRecognition
 							}
 							else
 							{
-								x = H[i][i + 1];
-								y = H[i + 1][i];
-								q = (d[i] - p) * (d[i] - p) + e[i] * e[i];
+								x = __H[i][i + 1];
+								y = __H[i + 1][i];
+								q = (__d[i] - p) * (__d[i] - p) + __e[i] * __e[i];
 								t = (x * s - z * r) / q;
-								H[i][n] = t;
+								__H[i][n] = t;
 								if (Maths.abs(x) > Maths.abs(z))
 								{
-									H[i + 1][n] = (-r - w * t) / x;
+									__H[i + 1][n] = (-r - w * t) / x;
 								}
 								else
 								{
-									H[i + 1][n] = (-s - y * t) / z;
+									__H[i + 1][n] = (-s - y * t) / z;
 								}
 							}
 
 							// Overflow control
 
-							t = Maths.abs(H[i][n]);
+							t = Maths.abs(__H[i][n]);
 							if ((eps * t) * t > 1)
 							{
 								for (j = i; j <= n; j++)
 								{
-									H[j][n] = H[j][n] / t;
+									__H[j][n] = __H[j][n] / t;
 								}
 							}
 						}
@@ -657,19 +668,19 @@ package com.oskarwicha.images.FaceRecognition
 
 					// Last vector component imaginary so matrix is triangular
 
-					if (Maths.abs(H[n][n - 1]) > Maths.abs(H[n - 1][n]))
+					if (Maths.abs(__H[n][n - 1]) > Maths.abs(__H[n - 1][n]))
 					{
-						H[n - 1][n - 1] = q / H[n][n - 1];
-						H[n - 1][n] = -(H[n][n] - p) / H[n][n - 1];
+						__H[n - 1][n - 1] = q / __H[n][n - 1];
+						__H[n - 1][n] = -(__H[n][n] - p) / __H[n][n - 1];
 					}
 					else
 					{
-						cdiv(0.0, -H[n - 1][n], H[n - 1][n - 1] - p, q);
-						H[n - 1][n - 1] = cdivr;
-						H[n - 1][n] = cdivi;
+						cdiv(0.0, -__H[n - 1][n], __H[n - 1][n - 1] - p, q);
+						__H[n - 1][n - 1] = __cdivr;
+						__H[n - 1][n] = __cdivi;
 					}
-					H[n][n - 1] = 0.0;
-					H[n][n] = 1.0;
+					__H[n][n - 1] = 0.0;
+					__H[n][n] = 1.0;
 					for (i = n - 2; i >= 0; i--)
 					{
 						var ra:Number, sa:Number, vr:Number, vi:Number;
@@ -677,12 +688,12 @@ package com.oskarwicha.images.FaceRecognition
 						sa = 0.0;
 						for (j = l; j <= n; j++)
 						{
-							ra = ra + H[i][j] * H[j][n - 1];
-							sa = sa + H[i][j] * H[j][n];
+							ra = ra + __H[i][j] * __H[j][n - 1];
+							sa = sa + __H[i][j] * __H[j][n];
 						}
-						w = H[i][i] - p;
+						w = __H[i][i] - p;
 
-						if (e[i] < 0.0)
+						if (__e[i] < 0.0)
 						{
 							z = w;
 							r = ra;
@@ -691,50 +702,50 @@ package com.oskarwicha.images.FaceRecognition
 						else
 						{
 							l = i;
-							if (e[i] == 0)
+							if (__e[i] == 0)
 							{
 								cdiv(-ra, -sa, w, q);
-								H[i][n - 1] = cdivr;
-								H[i][n] = cdivi;
+								__H[i][n - 1] = __cdivr;
+								__H[i][n] = __cdivi;
 							}
 							else
 							{
 
 								// Solve complex equations
 
-								x = H[i][i + 1];
-								y = H[i + 1][i];
-								vr = (d[i] - p) * (d[i] - p) + e[i] * e[i] - q * q;
-								vi = (d[i] - p) * 2.0 * q;
+								x = __H[i][i + 1];
+								y = __H[i + 1][i];
+								vr = (__d[i] - p) * (__d[i] - p) + __e[i] * __e[i] - q * q;
+								vi = (__d[i] - p) * 2.0 * q;
 								if (vr == 0.0 && vi == 0.0)
 								{
 									vr = eps * norm * (Maths.abs(w) + Maths.abs(q) + Maths.abs(x) + Maths.abs(y) + Maths.abs(z));
 								}
 								cdiv(x * r - z * ra + q * sa, x * s - z * sa - q * ra, vr, vi);
-								H[i][n - 1] = cdivr;
-								H[i][n] = cdivi;
+								__H[i][n - 1] = __cdivr;
+								__H[i][n] = __cdivi;
 								if (Maths.abs(x) > (Maths.abs(z) + Maths.abs(q)))
 								{
-									H[i + 1][n - 1] = (-ra - w * H[i][n - 1] + q * H[i][n]) / x;
-									H[i + 1][n] = (-sa - w * H[i][n] - q * H[i][n - 1]) / x;
+									__H[i + 1][n - 1] = (-ra - w * __H[i][n - 1] + q * __H[i][n]) / x;
+									__H[i + 1][n] = (-sa - w * __H[i][n] - q * __H[i][n - 1]) / x;
 								}
 								else
 								{
-									cdiv(-r - y * H[i][n - 1], -s - y * H[i][n], z, q);
-									H[i + 1][n - 1] = cdivr;
-									H[i + 1][n] = cdivi;
+									cdiv(-r - y * __H[i][n - 1], -s - y * __H[i][n], z, q);
+									__H[i + 1][n - 1] = __cdivr;
+									__H[i + 1][n] = __cdivi;
 								}
 							}
 
 							// Overflow control
 
-							t = Math.max(Maths.abs(H[i][n - 1]), Maths.abs(H[i][n]));
+							t = Math.max(Maths.abs(__H[i][n - 1]), Maths.abs(__H[i][n]));
 							if ((eps * t) * t > 1)
 							{
 								for (j = i; j <= n; j++)
 								{
-									H[j][n - 1] = H[j][n - 1] / t;
-									H[j][n] = H[j][n] / t;
+									__H[j][n - 1] = __H[j][n - 1] / t;
+									__H[j][n] = __H[j][n] / t;
 								}
 							}
 						}
@@ -748,9 +759,11 @@ package com.oskarwicha.images.FaceRecognition
 			{
 				if (i < low || i > high)
 				{
+					Vi = __V[i];
+					Hi = __H[i];
 					for (j = i; j < nn; j++)
 					{
-						V[i][j] = H[i][j];
+						Vi[j] = Hi[j];
 					}
 				}
 			}
@@ -759,15 +772,18 @@ package com.oskarwicha.images.FaceRecognition
 
 			for (j = nn - 1; j >= low; j--)
 			{
-				for (i = low; i <= high; i++)
+				var maxK:int = (j < high)? j : high;
+				for (i = low; i <= high; ++i)
 				{
+					Vi = __V[i];
 					z = 0.0;
-					for (k = low; k <= Math.min(j, high); k++)
+					for (k = low; k <= maxK; ++k)
 					{
-						z = z + V[i][k] * H[k][j];
+						z += Vi[k] * __H[k][j];
 					}
-					V[i][j] = z;
+					Vi[j] = z;
 				}
+				__V[high] = Vi;
 			}
 		}
 
@@ -782,7 +798,7 @@ package com.oskarwicha.images.FaceRecognition
 			//  Fortran subroutines in EISPACK.
 
 			var low:int = 0;
-			var high:int = n - 1;
+			var high:int = __n - 1;
 			var i:int = 0;
 			var j:int = 0;
 			var k:int = 0;
@@ -790,100 +806,102 @@ package com.oskarwicha.images.FaceRecognition
 			var g:Number = 0;
 			var m:int = 0;
 
-			for (m = low + 1; m <= high - 1; m++)
+			for (m = low + 1; m <= high - 1; ++m)
 			{
-
 				// Scale column.
 
 				var scale:Number = 0.0;
-				for (i = m; i <= high; i++)
+				for (i = m; i <= high; ++i)
 				{
-					scale = scale + Maths.abs(H[i][m - 1]);
+					scale += Maths.abs(__H[i][m - 1]);
 				}
 				if (scale != 0.0)
 				{
-
 					// Compute Householder transformation.
 
 					var h:Number = 0.0;
 					for (i = high; i >= m; i--)
 					{
-						ort[i] = H[i][m - 1] / scale;
-						h += ort[i] * ort[i];
+						__ort[i] = __H[i][m - 1] / scale;
+						h += __ort[i] * __ort[i];
 					}
 					g = Math.sqrt(h);
-					if (ort[m] > 0)
+					if (__ort[m] > 0)
 					{
 						g = -g;
 					}
-					h = h - ort[m] * g;
-					ort[m] = ort[m] - g;
+					h = h - __ort[m] * g;
+					__ort[m] = __ort[m] - g;
 
 					// Apply Householder similarity transformation
 					// H = (I-u*u'/h)*H*(I-u*u')/h)
-
-					for (j = m; j < n; j++)
+					
+					for (j = m; j < __n; j++)
 					{
 						f = 0.0;
 						for (i = high; i >= m; i--)
 						{
-							f += ort[i] * H[i][j];
+							f += __ort[i] * __H[i][j];
 						}
 						f = f / h;
 						for (i = m; i <= high; i++)
 						{
-							H[i][j] -= f * ort[i];
+							__H[i][j] -= f * __ort[i];
 						}
 					}
 
 					for (i = 0; i <= high; i++)
 					{
+						var Hi:Vector.<Number> = __H[i];
 						f = 0.0;
 						for (j = high; j >= m; j--)
 						{
-							f += ort[j] * H[i][j];
+							f += __ort[j] * Hi[j];
 						}
 						f = f / h;
 						for (j = m; j <= high; j++)
 						{
-							H[i][j] -= f * ort[j];
+							Hi[j] -= f * __ort[j];
 						}
+						__H[i] = Hi;
 					}
-					ort[m] = scale * ort[m];
-					H[m][m - 1] = scale * g;
+					__ort[m] = scale * __ort[m];
+					__H[m][m - 1] = scale * g;
 				}
 			}
 
 			// Accumulate transformations (Algol's ortran).
 
-			for (i = 0; i < n; i++)
+			for (i = 0; i < __n; i++)
 			{
-				for (j = 0; j < n; j++)
+				var Vi:Vector.<Number> = __V[i];
+				for (j = 0; j < __n; j++)
 				{
-					V[i][j] = (i == j ? 1.0 : 0.0);
+					Vi[j] = (i == j ? 1.0 : 0.0);
 				}
+				__V[i] =Vi;
 			}
 
 			for (m = high - 1; m >= low + 1; m--)
 			{
-				if (H[m][m - 1] != 0.0)
+				if (__H[m][m - 1] != 0.0)
 				{
-					for (i = m + 1; i <= high; i++)
+					for (i = m + 1; i <= high; ++i)
 					{
-						ort[i] = H[i][m - 1];
+						__ort[i] = __H[i][m - 1];
 					}
-					for (j = m; j <= high; j++)
+					for (j = m; j <= high; ++j)
 					{
 						g = 0.0;
-						for (i = m; i <= high; i++)
+						for (i = m; i <= high; ++i)
 						{
-							g += ort[i] * V[i][j];
+							g += __ort[i] * __V[i][j];
 						}
 						// Double division avoids possible underflow
-						g = (g / ort[m]) / H[m][m - 1];
-						for (i = m; i <= high; i++)
+						g = (g / __ort[m]) / __H[m][m - 1];
+						for (i = m; i <= high; ++i)
 						{
-							V[i][j] += g * ort[i];
+							__V[i][j] += g * __ort[i];
 						}
 					}
 				}
@@ -903,25 +921,25 @@ package com.oskarwicha.images.FaceRecognition
 			var j:int = 0;
 			var k:int = 0;
 			var p:Number = 0;
-			for (i = 1; i < n; i++)
+			for (i = 1; i < __n; ++i)
 			{
-				e[i - 1] = e[i];
+				__e[uint(i - 1)] = __e[i];
 			}
-			e[n - 1] = 0.0;
+			__e[__n - 1] = 0.0;
 
 			var f:Number = 0.0;
 			var tst1:Number = 0.0;
 			var eps:Number = Math.pow(2.0, -52.0);
-			for (var l:int = 0; l < n; l++)
+			for (var l:int = 0; l < __n; l++)
 			{
 
 				// Find small subdiagonal element
 
-				tst1 = Math.max(tst1, Maths.abs(d[l]) + Maths.abs(e[l]));
+				tst1 = Math.max(tst1, Maths.abs(__d[l]) + Maths.abs(__e[l]));
 				var m:int = l;
-				while (m < n)
+				while (m < __n)
 				{
-					if (Maths.abs(e[m]) <= eps * tst1)
+					if (Maths.abs(__e[m]) <= eps * tst1)
 					{
 						break;
 					}
@@ -936,34 +954,34 @@ package com.oskarwicha.images.FaceRecognition
 					var iter:int = 0;
 					do
 					{
-						iter = iter + 1; // (Could check iteration count here.)
+						++iter; // (Could check iteration count here.)
 
 						// Compute implicit shift
 
-						var g:Number = d[l];
-						p = (d[l + 1] - g) / (2.0 * e[l]);
+						var g:Number = __d[l];
+						p = (__d[l + 1] - g) / (2.0 * __e[l]);
 						var r:Number = Maths.hypot(p, 1.0);
 						if (p < 0)
 						{
 							r = -r;
 						}
-						d[l] = e[l] / (p + r);
-						d[l + 1] = e[l] * (p + r);
-						var dl1:Number = d[l + 1];
-						var h:Number = g - d[l];
-						for (i = l + 2; i < n; i++)
+						__d[l] = __e[l] / (p + r);
+						__d[l + 1] = __e[l] * (p + r);
+						var dl1:Number = __d[l + 1];
+						var h:Number = g - __d[l];
+						for (i = l + 2; i < __n; i++)
 						{
-							d[i] -= h;
+							__d[i] -= h;
 						}
 						f = f + h;
 
 						// Implicit QL transformation.
 
-						p = d[m];
+						p = __d[m];
 						var c:Number = 1.0;
 						var c2:Number = c;
 						var c3:Number = c;
-						var el1:Number = e[l + 1];
+						var el1:Number = __e[l + 1];
 						var s:Number = 0.0;
 						var s2:Number = 0.0;
 						for (i = m - 1; i >= l; i--)
@@ -971,59 +989,60 @@ package com.oskarwicha.images.FaceRecognition
 							c3 = c2;
 							c2 = c;
 							s2 = s;
-							g = c * e[i];
+							g = c * __e[i];
 							h = c * p;
-							r = Maths.hypot(p, e[i]);
-							e[i + 1] = s * r;
-							s = e[i] / r;
+							r = Maths.hypot(p, __e[i]);
+							__e[i + 1] = s * r;
+							s = __e[i] / r;
 							c = p / r;
-							p = c * d[i] - s * g;
-							d[i + 1] = h + s * (c * g + s * d[i]);
+							p = c * __d[i] - s * g;
+							__d[i + 1] = h + s * (c * g + s * __d[i]);
 
 							// Accumulate transformation.
 
-							for (k = 0; k < n; k++)
+							for (k = 0; k < __n; k++)
 							{
-								h = V[k][i + 1];
-								V[k][i + 1] = s * V[k][i] + c * h;
-								V[k][i] = c * V[k][i] - s * h;
+								h = __V[k][i + 1];
+								__V[k][i + 1] = s * __V[k][i] + c * h;
+								__V[k][i] = c * __V[k][i] - s * h;
 							}
 						}
-						p = -s * s2 * c3 * el1 * e[l] / dl1;
-						e[l] = s * p;
-						d[l] = c * p;
+						p = -s * s2 * c3 * el1 * __e[l] / dl1;
+						__e[l] = s * p;
+						__d[l] = c * p;
 
 							// Check for convergence.
 
-					} while (Maths.abs(e[l]) > eps * tst1);
+					} while (Maths.abs(__e[l]) > eps * tst1);
 				}
-				d[l] = d[l] + f;
-				e[l] = 0.0;
+				__d[l] = __d[l] + f;
+				__e[l] = 0.0;
 			}
 
 			// Sort eigenvalues and corresponding vectors.
 
-			for (i = 0; i < n - 1; i++)
+			for (i = 0; i < __n - 1; i++)
 			{
 				k = i;
-				p = d[i];
-				for (j = i + 1; j < n; j++)
+				p = __d[i];
+				for (j = i + 1; j < __n; j++)
 				{
-					if (d[j] < p)
+					if (__d[j] < p)
 					{
 						k = j;
-						p = d[j];
+						p = __d[j];
 					}
 				}
 				if (k != i)
 				{
-					d[k] = d[i];
-					d[i] = p;
-					for (j = 0; j < n; j++)
+					__d[k] = __d[i];
+					__d[i] = p;
+					for (j = 0; j < __n; j++)
 					{
-						p = V[j][i];
-						V[j][i] = V[j][k];
-						V[j][k] = p;
+						var Vj:Vector.<Number> = __V[j];
+						p = Vj[i];
+						Vj[i] = Vj[k];
+						Vj[k] = p;
 					}
 				}
 			}
@@ -1047,14 +1066,14 @@ package com.oskarwicha.images.FaceRecognition
 			var k:int = 0;
 			var h:Number = 0;
 			var g:Number = 0;
-			for (j = 0; j < n; j++)
+			for (j = 0; j < __n; j++)
 			{
-				d[j] = V[n - 1][j];
+				__d[j] = __V[__n - 1][j];
 			}
 
 			// Householder reduction to tridiagonal form.
 
-			for (i = n - 1; i > 0; i--)
+			for (i = __n - 1; i > 0; i--)
 			{
 
 				// Scale to avoid under/overflow.
@@ -1063,16 +1082,16 @@ package com.oskarwicha.images.FaceRecognition
 				h = 0.0;
 				for (k = 0; k < i; k++)
 				{
-					scale = scale + Maths.abs(d[k]);
+					scale = scale + Maths.abs(__d[k]);
 				}
 				if (scale == 0.0)
 				{
-					e[i] = d[i - 1];
+					__e[i] = __d[i - 1];
 					for (j = 0; j < i; j++)
 					{
-						d[j] = V[i - 1][j];
-						V[i][j] = 0.0;
-						V[j][i] = 0.0;
+						__d[j] = __V[i - 1][j];
+						__V[i][j] = 0.0;
+						__V[j][i] = 0.0;
 					}
 				}
 				else
@@ -1082,101 +1101,101 @@ package com.oskarwicha.images.FaceRecognition
 
 					for (k = 0; k < i; k++)
 					{
-						d[k] /= scale;
-						h += d[k] * d[k];
+						__d[k] /= scale;
+						h += __d[k] * __d[k];
 					}
-					var f:Number = d[i - 1];
+					var f:Number = __d[i - 1];
 					g = Math.sqrt(h);
 					if (f > 0)
 					{
 						g = -g;
 					}
-					e[i] = scale * g;
+					__e[i] = scale * g;
 					h = h - f * g;
-					d[i - 1] = f - g;
+					__d[i - 1] = f - g;
 					for (j = 0; j < i; j++)
 					{
-						e[j] = 0.0;
+						__e[j] = 0.0;
 					}
 
 					// Apply similarity transformation to remaining columns.
 
 					for (j = 0; j < i; j++)
 					{
-						f = d[j];
-						V[j][i] = f;
-						g = e[j] + V[j][j] * f;
+						f = __d[j];
+						__V[j][i] = f;
+						g = __e[j] + __V[j][j] * f;
 						for (k = j + 1; k <= i - 1; k++)
 						{
-							g += V[k][j] * d[k];
-							e[k] += V[k][j] * f;
+							g += __V[k][j] * __d[k];
+							__e[k] += __V[k][j] * f;
 						}
-						e[j] = g;
+						__e[j] = g;
 					}
 					f = 0.0;
 					for (j = 0; j < i; j++)
 					{
-						e[j] /= h;
-						f += e[j] * d[j];
+						__e[j] /= h;
+						f += __e[j] * __d[j];
 					}
 					var hh:Number = f / (h + h);
 					for (j = 0; j < i; j++)
 					{
-						e[j] -= hh * d[j];
+						__e[j] -= hh * __d[j];
 					}
 					for (j = 0; j < i; j++)
 					{
-						f = d[j];
-						g = e[j];
-						for (k = j; k <= i - 1; k++)
+						f = __d[j];
+						g = __e[j];
+						for (k = j; k <= i - 1; ++k)
 						{
-							V[k][j] -= (f * e[k] + g * d[k]);
+							__V[k][j] -= (f * __e[k] + g * __d[k]);
 						}
-						d[j] = V[i - 1][j];
-						V[i][j] = 0.0;
+						__d[j] = __V[i - 1][j];
+						__V[i][j] = 0.0;
 					}
 				}
-				d[i] = h;
+				__d[i] = h;
 			}
 
 			// Accumulate transformations.
 
-			for (i = 0; i < n - 1; i++)
+			for (i = 0; i < __n - 1; i++)
 			{
-				V[n - 1][i] = V[i][i];
-				V[i][i] = 1.0;
-				h = d[i + 1];
+				__V[__n - 1][i] = __V[i][i];
+				__V[i][i] = 1.0;
+				h = __d[i + 1];
 				if (h != 0.0)
 				{
 					for (k = 0; k <= i; k++)
 					{
-						d[k] = V[k][i + 1] / h;
+						__d[k] = __V[k][i + 1] / h;
 					}
 					for (j = 0; j <= i; j++)
 					{
 						g = 0.0;
 						for (k = 0; k <= i; k++)
 						{
-							g += V[k][i + 1] * V[k][j];
+							g += __V[k][i + 1] * __V[k][j];
 						}
 						for (k = 0; k <= i; k++)
 						{
-							V[k][j] -= g * d[k];
+							__V[k][j] -= g * __d[k];
 						}
 					}
 				}
 				for (k = 0; k <= i; k++)
 				{
-					V[k][i + 1] = 0.0;
+					__V[k][i + 1] = 0.0;
 				}
 			}
-			for (j = 0; j < n; j++)
+			for (j = 0; j < __n; j++)
 			{
-				d[j] = V[n - 1][j];
-				V[n - 1][j] = 0.0;
+				__d[j] = __V[__n - 1][j];
+				__V[__n - 1][j] = 0.0;
 			}
-			V[n - 1][n - 1] = 1.0;
-			e[0] = 0.0;
+			__V[__n - 1][__n - 1] = 1.0;
+			__e[0] = 0.0;
 		}
 	}
 }

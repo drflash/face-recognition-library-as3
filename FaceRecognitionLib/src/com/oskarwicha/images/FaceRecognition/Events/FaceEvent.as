@@ -28,8 +28,7 @@ package com.oskarwicha.images.FaceRecognition.Events
 		 * zdarzenia (event'u).
 		 *
 		 */
-		public static const FACE_LOADED:String =
-			"FaceEvent_FACE_LOADED";
+		public static const FACE_LOADED:String = "FaceEvent_FACE_LOADED";
 		
 		/**
 		 * Konstruktor klasy.
@@ -64,8 +63,7 @@ package com.oskarwicha.images.FaceRecognition.Events
 		 */
 		public override function clone():Event
 		{
-			var ev:FaceEvent =
-				new FaceEvent(type, bubbles, cancelable);
+			var ev:FaceEvent =	new FaceEvent(type, bubbles, cancelable);
 			ev.face = face;
 			return ev;
 		}
