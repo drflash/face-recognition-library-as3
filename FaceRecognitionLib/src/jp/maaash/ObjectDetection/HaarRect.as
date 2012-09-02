@@ -6,6 +6,9 @@
 // Copyright (C) 2008, Masakazu OHTSUKA (mash), all rights reserved.
 // contact o.masakazu(at)gmail.com
 //
+// additional optimizations by Mario Klingemann / Quasimondo
+// contact mario(at)quasimondo.com
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
 //
@@ -29,39 +32,47 @@
 //
 package jp.maaash.ObjectDetection
 {
-	public class HaarRect{
+	/**
+	 * @flowerModelElementId _WCcXcPQwEeG4_d92CzHtyg
+	 */
+	internal final class HaarRect
+	{
 		public  var dx      :int;	// default values read from xml
 		public  var dy      :int;
 		public  var dw      :int;
 		public  var dh      :int;
-		public  var dweight :Number;
+		public  var dWeight :Number;
 		public  var sx      :int;	// scaled values
 		public  var sy      :int;
 		public  var sw      :int;
 		public  var sh      :int;
-		public  var sweight :Number;
-		public function HaarRect( s :String ) {
-			var a:Array = s.split(" ");	// something like "3 7 14 4 -1."
-			dx      = a[0];
-			dy      = a[1];
-			dw      = a[2];
-			dh      = a[3];
-			dweight = a[4];
+		public  var sWeight :Number;
+		
+		public function HaarRect( d:Array ) 
+		{
+			dx      = int(d[0]);
+			dy      = int(d[1]);
+			dw      = int(d[2]);
+			dh      = int(d[3]);
+			dWeight = Number(d[4]);
 		}
 
-		public function get area():int{
-			return sw*sh;
+		public function get area():Number
+		{
+			return Number(sw * sh);
 		}
 
-		public function set scale(s:Number):void{
-			sx = int( dx * s );
-			sy = int( dy * s );
-			sw = int( dw * s );
-			sh = int( dh * s );
+		public function set scale(s:Number):void
+		{
+			sx = int( Number(dx) * s );
+			sy = int( Number(dy) * s );
+			sw = int( Number(dw) * s );
+			sh = int( Number(dh) * s );
 		}
 
-		public function set scale_weight(s:Number):void{
-			sweight = dweight * s;
+		public function set scaleWeight(s:Number):void
+		{
+			sWeight = dWeight * s;
 		}
 	}
 }

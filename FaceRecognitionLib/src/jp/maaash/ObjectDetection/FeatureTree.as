@@ -6,6 +6,9 @@
 // Copyright (C) 2008, Masakazu OHTSUKA (mash), all rights reserved.
 // contact o.masakazu(at)gmail.com
 //
+// additional optimizations by Mario Klingemann / Quasimondo
+// contact mario(at)quasimondo.com
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
 //
@@ -29,10 +32,27 @@
 //
 package jp.maaash.ObjectDetection
 {
-	public class FeatureTree{
-		public  var features        :Array = new Array;
-		public  var stage_threshold :Number;
-		public function FeatureTree(){
+	/**
+	 * @flowerModelElementId _WCSmcPQwEeG4_d92CzHtyg
+	 */
+	internal final class FeatureTree
+	{
+		/**
+		 * @flowerModelElementId _WCSmcfQwEeG4_d92CzHtyg
+		 */
+		public var stageThreshold :Number;
+		/**
+		 * @flowerModelElementId _WCSmcvQwEeG4_d92CzHtyg
+		 */
+		public var next			  :FeatureTree;
+		/**
+		 * @flowerModelElementId _WCTNgPQwEeG4_d92CzHtyg
+		 */
+		public var firstFeature	  :FeatureBase;
+		
+		public function FeatureTree( stage_threshold:Number )
+		{
+			this.stageThreshold = stage_threshold;
 		}
 	}
 }

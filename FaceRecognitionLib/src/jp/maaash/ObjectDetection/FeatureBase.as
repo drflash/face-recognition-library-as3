@@ -6,6 +6,9 @@
 // Copyright (C) 2008, Masakazu OHTSUKA (mash), all rights reserved.
 // contact o.masakazu(at)gmail.com
 //
+// additional optimizations by Mario Klingemann / Quasimondo
+// contact mario(at)quasimondo.com
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
 //
@@ -29,26 +32,30 @@
 //
 package jp.maaash.ObjectDetection
 {
-	public class FeatureBase{
-		public  var tilted    :int = 0;
+	/**
+	 * @flowerModelElementId _WCDV4PQwEeG4_d92CzHtyg
+	 */
+	internal class FeatureBase
+	{
 		public  var threshold :Number;
-		public  var left_val  :Number;
-		public  var right_val :Number;
-		public function FeatureBase(_t:int, _th:Number, _lv:Number, _rv:Number){
-			tilted    = _t;
+		public  var leftVal   :Number;
+		public  var rightVal  :Number;
+		public  var next	  :FeatureBase;
+		
+		public function FeatureBase(_th:Number, _lv:Number, _rv:Number)
+		{
 			threshold = _th;
-			left_val  = _lv;
-			right_val = _rv;
+			leftVal  = _lv;
+			rightVal = _rv;
 		}
 
-		public function getSum( t:TargetImage, x:int, y:int ):Number{
+		internal function getSum(targetImage:TargetImage, x:int, y:int):Number
+		{
 			return 0;
 		}
 
-		public function setScaleAndWeight(s:Number,w:Number):void{
-		}
-
-		public function setRect(r:HaarRect,i:int):void{
+		internal function setScaleAndWeight(s:Number, w:Number):void
+		{
 		}
 	}
 }

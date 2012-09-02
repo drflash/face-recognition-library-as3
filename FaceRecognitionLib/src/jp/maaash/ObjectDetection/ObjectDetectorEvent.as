@@ -6,6 +6,9 @@
 // Copyright (C) 2008, Masakazu OHTSUKA (mash), all rights reserved.
 // contact o.masakazu(at)gmail.com
 //
+// additional optimizations by Mario Klingemann / Quasimondo
+// contact mario(at)quasimondo.com
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
 //
@@ -31,19 +34,26 @@ package jp.maaash.ObjectDetection
 {
 	import flash.events.Event;
 	import flash.geom.Rectangle;
-	public class ObjectDetectorEvent extends Event {
+	
+	/**
+	 * @flowerModelElementId _WCpLwPQwEeG4_d92CzHtyg
+	 */
+	public class ObjectDetectorEvent extends Event 
+	{
 		public static const DETECTION_COMPLETE         :String = "ObjectDetectorEvent_DETECTION_COMPLETE";
 		public static const FACE_FOUND                 :String = "ObjectDetectorEvent_FACE_FOUND";
-		public static const HAARCASCADES_LOADING       :String = "ObjectDetectorEvent_HAARCASCADES_LOADING";
-		public static const HAARCASCADES_LOAD_COMPLETE :String = "ObjectDetectorEvent_HAARCASCADES_LOAD_COMPLETE";
 		public static const DETECTION_START            :String = "ObjectDetectorEvent_DETECTION_START";
 
 		public var rect         :Rectangle;
-		public var rects        :Array;
-		public function ObjectDetectorEvent( t :String ) {
+		public var rects        :Vector.<Rectangle>;
+		
+		public function ObjectDetectorEvent( t :String ) 
+		{
 			super(t);
 		}
-		public override function clone():Event {
+		
+		public override function clone():Event 
+		{
 			var ev :ObjectDetectorEvent = new ObjectDetectorEvent( type );
 			ev.rect  = rect;
 			ev.rects = rects;

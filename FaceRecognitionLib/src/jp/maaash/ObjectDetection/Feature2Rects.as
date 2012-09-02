@@ -6,6 +6,12 @@
 // Copyright (C) 2008, Masakazu OHTSUKA (mash), all rights reserved.
 // contact o.masakazu(at)gmail.com
 //
+// additional optimizations by Mario Klingemann / Quasimondo
+// contact mario(at)quasimondo.com
+//
+// additional optimizations by Oskar Wicha / OSCYLOSKOP
+// contact oscyloskop(at)gmail.com
+//
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
 //
@@ -29,37 +35,72 @@
 //
 package jp.maaash.ObjectDetection
 {
-	public class Feature2Rects extends FeatureBase {
-		public  var r1 :HaarRect;
-		public  var r2 :HaarRect;
+	/**
+	 * @flowerModelElementId _WCCu0PQwEeG4_d92CzHtyg
+	 */
+	internal class Feature2Rects extends FeatureBase 
+	{
+		/**
+		 * @flowerModelElementId _WCDV4vQwEeG4_d92CzHtyg
+		 */
+		private  var r1 :HaarRect;
+		/**
+		 * @flowerModelElementId _WCD88PQwEeG4_d92CzHtyg
+		 */
+		private  var r2 :HaarRect;
 
-		public function Feature2Rects(_t:int, _th:Number, _lv:Number, _rv:Number){
-			super(_t,_th,_lv,_rv);
+		public function Feature2Rects( _th:Number, _lv:Number, _rv:Number, _r1:Array, _r2:Array )
+		{
+			super(_th,_lv,_rv);
+			r1 = new HaarRect(_r1);
+			r2 = new HaarRect(_r2);
 		}
 
-		public override function getSum( t:TargetImage, offsetx:int, offsety:int ):Number{
-			var sum:Number = 0;
-			sum += t.getSum( offsetx + r1.sx, offsety + r1.sy, r1.sw, r1.sh ) * r1.sweight;
-			sum += t.getSum( offsetx + r2.sx, offsety + r2.sy, r2.sw, r2.sh ) * r2.sweight;
-			return sum;
+		internal override function getSum( targetImage:TargetImage, offsetx:int, offsety:int ):Number
+		{
+			var x		:uint = offsetx + r1.sx;
+			var y		:uint = offsety + r1.sy;
+			var w		:uint = r1.sw;
+			var h		:uint = r1.sh;
+			var y_iiw   :uint = y       * targetImage.iiw;
+			var yh_iiw  :uint = (y + h) * targetImage.iiw;
+			var y_iiwx  :uint = y_iiw   + x;
+			var y_iiwxw :uint = y_iiwx  + w;
+			var yh_iiwx :uint = yh_iiw  + x;
+			var yh_iiwxw:uint = yh_iiwx + w;
+			var ii:Vector.<uint> = targetImage.ii;
+			
+			// sum for r1
+			var sum1:Number = Number(ii[y_iiwx] + ii[yh_iiwxw] - ii[yh_iiwx] - ii[y_iiwxw]);
+			
+			// update values for r2
+			x = offsetx + r2.sx;
+			y = offsety + r2.sy;
+			w = r2.sw;
+			h = r2.sh;
+			y_iiw    = y       * targetImage.iiw;
+			yh_iiw   = (y + h) * targetImage.iiw;
+			y_iiwx   = y_iiw   + x;
+			y_iiwxw  = y_iiwx  + w;
+			yh_iiwx  = yh_iiw  + x;
+			yh_iiwxw = yh_iiwx + w;
+			
+			// sum for r2
+			var sum2:Number = Number(ii[y_iiwx] + ii[yh_iiwxw] - ii[yh_iiwx] - ii[y_iiwxw]);
+			
+			return 	sum1 * r1.sWeight +
+					sum2 * r2.sWeight;
+			/*
+			return Number(targetImage.getSum( int(offsetx + r1.sx), int(offsety + r1.sy), r1.sw, r1.sh )) * r1.sWeight +
+				   Number(targetImage.getSum( int(offsetx + r2.sx), int(offsety + r2.sy), r2.sw, r2.sh )) * r2.sWeight;
+			*/
 		}
 
-		public override function setScaleAndWeight(s:Number,w:Number):void{
-			r2.scale = s;
-			r2.scale_weight = w;
-			r1.scale = s;
-			r1.sweight = - r2.area * r2.sweight / r1.area;
-		}
-
-		public override function setRect(r:HaarRect,i:int):void{
-			switch(i){
-			case 0:
-				r1 = r;
-				break;
-			case 1:
-				r2 = r;
-				break;
-			}
+		internal override function setScaleAndWeight(s:Number, w:Number):void
+		{
+			r1.scale = r2.scale = s;
+			r2.scaleWeight = w;
+			r1.sWeight = -Number(r2.sw * r2.sh) * r2.sWeight / Number(r1.sw * r1.sh);
 		}
 	}
 }
