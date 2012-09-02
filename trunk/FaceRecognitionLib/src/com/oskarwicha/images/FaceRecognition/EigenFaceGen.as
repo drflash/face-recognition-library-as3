@@ -1,6 +1,8 @@
 package com.oskarwicha.images.FaceRecognition
 {
-	import mx.controls.Alert;
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
 
 	/**
 	 * Klasa tworzy eigenfaces z obrazów twarzy.
@@ -9,7 +11,7 @@ package com.oskarwicha.images.FaceRecognition
 	 *
 	 * @flowerModelElementId _Tlw34GglEeCqZchJBDddKw
 	 */
-	internal class EigenFaceGen
+	internal class EigenFaceGen implements IExternalizable
 	{
 		/**
 		 * Konstruktor
@@ -20,20 +22,20 @@ package com.oskarwicha.images.FaceRecognition
 		}
 
 		// Średnia twarz uzywana podczas treningu
-		private var averageFace:KMatrix;
+		private var __averageFace:KMatrix;
 
 		// Posorotwane wartości uzyskane w procesie treningu.
-		private var eigValues:KMatrix;
+		private var __eigValues:KMatrix;
 
 		// Posortowane wektory uzyskane w procesie treningu.
-		private var eigVectors:KMatrix;
+		private var __eigVectors:KMatrix;
 
 		// Ilość używanych wektorów.
-		private var numOfEigenVecs:int = 0;
+		private var _numOfEigenVecs:uint = 0;
 
 		// Jesli proces treningu zakonczył się powodzeniem przyjmuje
 		// wartość "true".
-		private var trained:Boolean = false;
+		private var __trained:Boolean = false;
 
 		/**
 		 * Zwraca wartości eigenface dla zdjęcia
@@ -47,30 +49,25 @@ package com.oskarwicha.images.FaceRecognition
 		 * lub <code>this.getNumEigenVecs</code> w zależności, która z tych
 		 * wartości jest mniejsza
 		 */
-		internal final function getEigenFaces(pic:Picture, number:int):Vector.<Number>
+		internal final function getEigenFaces(pic:Picture, number:uint):Vector.<Number>
 		{
-			if (!pic || !eigVectors)
+			if (!pic || !__eigVectors)
 				return null;
 
 			// Dostosowuje wartość zmiennej "number" ażeby była równa lub 
 			// mniejsza od ilości dostępnych wektorów
-			if (number > numOfEigenVecs)
-				number = numOfEigenVecs;
+			if (number > _numOfEigenVecs)
+				number = _numOfEigenVecs;
 
 			var ret:Vector.<Number> = new Vector.<Number>(number, true);
 			var pictureVector:Vector.<Number> = pic.getImagePixels();
 
 			// Konwertuje macierz o wymiarach np. 50x50 do 1x2500
 			var face:KMatrix = KMatrix.makeFromColumnPackedVector(pictureVector, pictureVector.length);
-			var Vecs:KMatrix = eigVectors.getMatrixWithRange(0, int(eigVectors.getRowDimension() - 1), 0, int(number - 1)).transpose();
+			var vecs:KMatrix = __eigVectors.getMatrixWithRange(0, uint(__eigVectors.getRowDimension() - 1), 0, uint(number - 1)).transpose();
+			var rslt:KMatrix = vecs.times(face);
 
-			var rslt:KMatrix = Vecs.times(face);
-
-			var i:int = number;
-			while (i--)
-				ret[i] = rslt.get(i, 0);
-
-			return ret;
+			return rslt.getColAsVector(0, number);
 		}
 
 		/**
@@ -80,9 +77,9 @@ package com.oskarwicha.images.FaceRecognition
 		 * @return Liczba wygenereowanych eigen vectors (wektorów)
 		 *
 		 */
-		internal function getNumEigenVecs():int
+		internal function getNumEigenVecs():uint
 		{
-			return numOfEigenVecs;
+			return _numOfEigenVecs;
 		}
 
 		/**
@@ -96,7 +93,7 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		internal function isTrained():Boolean
 		{
-			return trained;
+			return __trained;
 		}
 
 		/**
@@ -115,17 +112,18 @@ package com.oskarwicha.images.FaceRecognition
 			 * dużej macierzy.
 			 *
 			 */
-			progress.advanceProgress("Konstrułowanie macierzy ...");
-
-			var dpix:Vector.<Vector.<Number>> = new Vector.<Vector.<Number>>(faces.length, true);
-
-			var i:int = faces.length;
+			progress.advanceProgress("Creating matrix...");
+			
+			var i:uint = faces.length;
+			var dpix:Vector.<Vector.<Number>> = new Vector.<Vector.<Number>>(i, true);
+			
 			while (i--)
 			{
+				var pic:Picture = faces[i].picture;
 				// Wykonywane dla każdego zdjęcia twarzy w zestawie.
-				dpix[i] = faces[i].picture.getImagePixels();
+				dpix[i] = pic.getImagePixels();
 			}
-			// Tworzy wektor z wektorów jednowierszowych zawierających
+			// Tworzy obiekt KMatrix ze zbioru wektorów jednowierszowych zawierających
 			// wszystkie obrazy twarzy z testowego zestawu.
 			var matrix:KMatrix = KMatrix.makeFromVector(dpix);
 
@@ -137,38 +135,40 @@ package com.oskarwicha.images.FaceRecognition
 			 * treningowym a średnią twarzą.
 			 *
 			 */
-			progress.advanceProgress("Obliczanie średniej twarzy...");
+			progress.advanceProgress("Calculating average face...");
+			
 			var matrixColumnDimension:int = matrix.getColumnDimension();
-			averageFace = new KMatrix(1, matrixColumnDimension);
-
 			var matrixRowDimension:int = matrix.getRowDimension();
+			var amountOfFacesInverted:Number = Number(1.0 / Number(matrix.getRowDimension()));
+			
+			__averageFace = new KMatrix(1, matrixColumnDimension);
+			
 			i = matrixRowDimension;
 			while (i--)
-				averageFace.plusEquals(matrix.getRow(i));
-
-			var amountOfFacesInverted:Number = Number(1 / matrix.getRowDimension());
+				__averageFace.plusEquals(matrix.getRow(i));
 
 			// Końcowy etap obliczania średniej twarzy
 			// przez pomnożenie przez odwrotność ilości
 			// twarzy w zestawie. 
-			averageFace.timesEquals(amountOfFacesInverted);
-			var bigAvg:KMatrix = new KMatrix(matrix.getRowDimension(), matrix.getColumnDimension());
-
+			__averageFace.timesEquals(amountOfFacesInverted);
+			var bigAvg:KMatrix = matrix.copyEmpty();
 			var bigAvgColumnDimensionMinusOne:int = int(bigAvg.getColumnDimension() - 1);
+
 			i = bigAvg.getRowDimension();
 			while (i--)
-				bigAvg.setMatrixWithRange(i, i, 0, bigAvgColumnDimensionMinusOne, averageFace);
+				bigAvg.setMatrixWithRange(i, i, 0, bigAvgColumnDimensionMinusOne, __averageFace);
 
 			// Oblicza dla każdej twarzy w zestawie różnice 
 			// między nią a średnią twarzą.
-			var A:KMatrix = matrix.minus(bigAvg).transpose();
+			var A:KMatrix = matrix.minus(bigAvg);
+			A = A.transpose();
 
 			/**
 			 * KROK 3
 			 * Obliczanie macierzy kowariancji.
 			 *
 			 */
-			progress.advanceProgress("Obliczanie macierzy kowariancji...");
+			progress.advanceProgress("Calculating covariance matrix...");
 			var At:KMatrix = A.transpose();
 			var L:KMatrix = At.times(A);
 
@@ -178,31 +178,31 @@ package com.oskarwicha.images.FaceRecognition
 			 * macierzy kowariancji.
 			 *
 			 */
-			progress.advanceProgress("Obliczanie eigenvectors...");
+			progress.advanceProgress("Calculating eigenvectors...");
 			var eigen:EigenvalueDecomposition = L.eig();
-			eigValues = eigen.getD();
-			eigVectors = eigen.getV();
+			__eigValues = eigen.getD();
+			__eigVectors = eigen.getV();
 
 			/**
 			 * KROK 5
 			 * Sortowanie wektorów/wartości na podstawie wielkości wartości (ang. eigen value)
 			 *
 			 */
-			progress.advanceProgress("Sortowanie eigenvectors...");
+			progress.advanceProgress("Sorting eigenvectors...");
 
-			var eigDVSorted:Vector.<KMatrix> = sortem(eigValues, eigVectors);
-			eigValues = eigDVSorted[0];
-			eigVectors = eigDVSorted[1];
+			var eigDVSorted:Vector.<KMatrix> = sortem(__eigValues, __eigVectors);
+			__eigValues = eigDVSorted[0];
+			__eigVectors = eigDVSorted[1];
 
 			/**
 			 * KROK 6
 			 * Konwertowanie wektorów dla A'*A do wektorów dla A*A'.
 			 *
 			 */
-			progress.advanceProgress("Konwertowanie eigenvectors...");
-			trace("A[X][Y]=A[" + A.getColumnDimension() + "][" + A.getRowDimension() + "]");
-			trace("eigenVectors[X][Y]=eigenVectors[" + eigVectors.getColumnDimension() + "][" + eigVectors.getRowDimension() + "]");
-			eigVectors = A.times(eigVectors);
+			progress.advanceProgress("Converting eigenvectors...");
+			//trace("\t A[X][Y]=A[" + A.getColumnDimension() + "][" + A.getRowDimension() + "]");
+			//trace("\t eigenVectors[X][Y]=eigenVectors[" + eigVectors.getColumnDimension() + "][" + eigVectors.getRowDimension() + "]");
+			__eigVectors = A.times(__eigVectors);
 			//trace("eigenVectors[X][Y]=eigenVectors[" + eigVectors.getColumnDimension() + "][" + eigVectors.getRowDimension() + "]");
 
 			/**
@@ -212,14 +212,14 @@ package com.oskarwicha.images.FaceRecognition
 			 * specyficzne dla cov(A') a nie A*A'.
 			 *
 			 */
-			progress.advanceProgress("Uzyskuje eigenvalues ...");
+			progress.advanceProgress("Calculating eigenvalues ...");
 
-			var values:Vector.<Number> = diag(eigValues);
-			var AColumnDimensionMinusOne:int = int(A.getColumnDimension() - 1);
+			var values:Vector.<Number> = __eigValues.getDiag();
+			var AColumnsMinusOneInv:Number = 1.0 / Number(A.getColumnDimension() - 1);
 
 			i = values.length;
 			while (i--)
-				values[i] /= AColumnDimensionMinusOne;
+				values[i] *= AColumnsMinusOneInv;
 
 			/**
 			 * KROK 8
@@ -227,62 +227,50 @@ package com.oskarwicha.images.FaceRecognition
 			 * usuwa wektory odpowiadające bardzo małym wartością.
 			 *
 			 */
-			progress.advanceProgress("Normalizuje eigenvectors...");
-			numOfEigenVecs = 0;
+			progress.advanceProgress("Normalizing eigenvectors...");
+			_numOfEigenVecs = 0;
 
-			var tmp:KMatrix;
-			var eigVectorsRowDimension:uint = eigVectors.getRowDimension();
+			var eigVectorsRowDimension:uint = __eigVectors.getRowDimension();
 			var eigVectorsRowDimensionMinusOne:uint = eigVectorsRowDimension - 1;
 			var tempKMatrix:KMatrix;
+			var invertedNormF:Number;
 
-			i = eigVectors.getColumnDimension();
+			i = __eigVectors.getColumnDimension();
 			while (i--)
 			{
-				if (values[i] >= 0.0001)
+				if (values[i] >= 0.001)
 				{
-					tempKMatrix = eigVectors.getMatrixWithRange(0, eigVectorsRowDimensionMinusOne, i, i);
-					tmp = tempKMatrix.timesScalar(1 / tempKMatrix.normF());
-					++numOfEigenVecs;
+					tempKMatrix = __eigVectors.getCol(i);
+					invertedNormF = 1.0 / tempKMatrix.normF();
+					tempKMatrix.timesEquals(invertedNormF);
+					++_numOfEigenVecs;
 				}
 				else
 				{
-					tmp = new KMatrix(eigVectorsRowDimension, 1);
+					tempKMatrix = new KMatrix(eigVectorsRowDimension, 1);
 				}
-				eigVectors.setMatrixWithRange(0, eigVectorsRowDimensionMinusOne, i, i, tmp);
+				__eigVectors.setCol(i, tempKMatrix);
 			}
-			eigVectors = eigVectors.getMatrixWithRange(0, eigVectorsRowDimensionMinusOne, 0, uint(numOfEigenVecs - 1));
-			trained = true;
-
-			trace("Uzyskano " + numOfEigenVecs + " eigenVectors"); //test
-			trace("Wymiary eigenVectors: " + eigVectors.getRowDimension() + " x " + eigVectors.getColumnDimension()); //test
-		}
-
-		/* Funkcja porównująca dwa obiekty klasy "di_pair" używana
-		 przy sortowaniu tablic. */
-		private function di_pair_sort(arg0:di_pair, arg1:di_pair):int
-		{
-			var diff:Number = arg0.value - arg1.value;
-			return (diff > 0) ? -1 : (diff < 0) ? 1 : 0;
+			__eigVectors = __eigVectors.getMatrixWithRange(0, eigVectorsRowDimensionMinusOne, 0, uint(_numOfEigenVecs - 1));
+			__trained = true;
+			
+			progress.advanceProgress("End of training ...", false);
+			trace("Created " + _numOfEigenVecs + " eigenVectors"); //test
+			trace("Dimensions of eigenVectors: " + __eigVectors.getRowDimension() + " x " + __eigVectors.getColumnDimension()); //test
 		}
 
 		/**
-		 * Zwraca diagonalną macierzy
-		 *
-		 * @param M Macierz której diagonalna ma zostać zwrócona
-		 * @return Tablica z obiektami typu Number zawierająca
-		 * wartości diagonalnej
-		 */
-		private function diag(M:KMatrix):Vector.<Number>
+		 * Funkcja porównująca dwa obiekty klasy "di_pair" używana
+		 * przy sortowaniu tablic. 
+		 * 
+		 * @private
+		 * */
+		private function diPair_sort(arg0:diPair, arg1:diPair):int
 		{
-			var i:int = M.getColumnDimension();
-			var dvec:Vector.<Number> = new Vector.<Number>(i, true);
-
-			while (i--)
-				dvec[i] = M.get(i, i);
-
-			return dvec;
+			var diff:Number = arg0.value - arg1.value;
+			return (diff > 0.0) ? -1 : (diff < 0.0) ? 1 : 0;
 		}
-
+		
 		/**
 		 * Sortuje eigen values (wartości) i vectors (wektory) w
 		 * porządku malejącym.
@@ -294,61 +282,74 @@ package com.oskarwicha.images.FaceRecognition
 		 */
 		private function sortem(D:KMatrix, V:KMatrix):Vector.<KMatrix>
 		{
-			var dvec:Vector.<Number> = diag(D);
-			var dvec_indexed:Vector.<di_pair> = new Vector.<di_pair>(dvec.length, true);
-			var i:int = dvec_indexed.length;
+			var dvec:Vector.<Number> = D.getDiag();
+			var dvecIndexed:Vector.<diPair> = new Vector.<diPair>(dvec.length, true);
+			var i:int = dvecIndexed.length;
+			
 			while (i--)
-			{
-				dvec_indexed[i] = new di_pair();
-				dvec_indexed[i].index = i;
-				dvec_indexed[i].value = dvec[i];
-			}
+				dvecIndexed[i] = new diPair(i, dvec[i]);
 
-			dvec_indexed.sort(di_pair_sort);
+			dvecIndexed.sort(diPair_sort);
 
 			var VColumnDimension:int = V.getColumnDimension();
 			var VRowDimension:int = V.getRowDimension();
-
-			var D2:KMatrix = new KMatrix(D.getRowDimension(), D.getColumnDimension());
-			var V2:KMatrix = new KMatrix(VRowDimension, VColumnDimension);
-
+			var D2:KMatrix = D.copyEmpty();
+			var V2:KMatrix = V.copyEmpty();
 			var height:int = int(VRowDimension - 1);
 			var tmp:KMatrix;
-
 			var tempIndex:int;
-			i = dvec_indexed.length;
+
+			i = dvecIndexed.length;
 			while (i--)
 			{
-				tempIndex = dvec_indexed[i].index;
+				tempIndex = dvecIndexed[i].index;
 				D2.set(i, i, D.get(tempIndex, tempIndex));
 				tmp = V.getRow(tempIndex);
 				V2.setMatrixWithRange(i, i, 0, height, tmp);
 			}
 
-			var V3:KMatrix = new KMatrix(VRowDimension, VColumnDimension);
+			var V3:KMatrix = V.copyEmpty();
 			var VRowDimensionMinusOne:int = int(VRowDimension - 1);
 			var VColumnDimensionMinusOne:int = int(VColumnDimension - 1);
 			var j:int;
+			
 			i = VRowDimension;
 			while (i--)
 			{
 				j = VColumnDimension;
+				
 				while (j--)
-				{
 					V3.set(i, j, V2.get(int(VRowDimensionMinusOne - i), int(VColumnDimensionMinusOne - j)));
-				}
 			}
-			var vec:Vector.<KMatrix> = new Vector.<KMatrix>(2, true);
-			vec[0] = D2;
-			vec[1] = V3;
-			return vec;
+			
+			return new <KMatrix>[D2, V3];
+		}
+		
+		public function writeExternal(output:IDataOutput):void
+		{		
+			output.writeUnsignedInt(_numOfEigenVecs);
+			output.writeBoolean(__trained);
+			output.writeObject(__eigVectors);
+		}
+		
+		public function readExternal(input:IDataInput):void 
+		{
+			_numOfEigenVecs = input.readUnsignedInt();
+			__trained = input.readBoolean();
+			__eigVectors = input.readObject() as KMatrix;
 		}
 	}
 }
 
 /* Klasa pomocnicza widoczna tylko dla kodu wewnątrz tego pliku */
-class di_pair
+class diPair
 {
 	public var index:int;
 	public var value:Number;
+	
+	public function diPair(_index:int, _value:Number)
+	{
+		this.index = _index;
+		this.value = _value;
+	}
 }

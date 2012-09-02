@@ -1,5 +1,7 @@
 package com.oskarwicha.images.FaceRecognition
 {
+	import flash.utils.*;
+	import mx.controls.Alert;
 
 	/**
 	 * Klasa służy do obsługi informacji o postępie w treningu
@@ -11,21 +13,32 @@ package com.oskarwicha.images.FaceRecognition
 	 */
 	internal class ProgressTracker
 	{
-
+		private var bFinished:Boolean;
+		private var task:int = 0;
+		private var timer:int;
+		private var log:String = "";
+		
 		public function ProgressTracker()
 		{
+			timer = getTimer();
 		}
 
-		private var bFinished:Boolean;
-
-		private var sProgress:String;
-		private var task:int = 0;
-
-		public function advanceProgress(message:String):void
+		public function advanceProgress(message:String, showLog:Boolean = false):void
 		{
-			task++;
-			sProgress = "Zadanie " + task + ": " + message;
-			trace(sProgress);
+			var text:String = "";
+			
+			if(task)
+				text += "Task finished in " + (getTimer() - timer) + " ms. \n";
+			
+			text += "Task " + (++task) + ": " + message;
+			
+			log += text + "\n";
+			trace(text);
+			
+			if(showLog)
+				Alert.show(log);
+			
+			timer = getTimer();
 		}
 	}
 }
