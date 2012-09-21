@@ -13,3 +13,7 @@ If you want to use face detection functionality of library you need to add to yo
 *_3. I'm new to all of this stuff where do I start?_*
 
 You can start by downloading _Example 1_ from Download section or by reading tutorial on this page [http://active.tutsplus.com/tutorials/media/automatically-tag-photos-with-the-as3-face-recognition-library/]
+
+*_4. My performance is really bad, whats going on?_*
+
+You probably testing your App in debug mode which is 10x slower than when using release version of the same App.  
