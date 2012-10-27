@@ -84,7 +84,7 @@ package com.oskarwicha.images.FaceDetection
 			}
 		}
 
-		private var _cropedFace:Bitmap = new Bitmap();
+		private var __croppedFaces:Vector.<Bitmap> = new Vector.<Bitmap>();
 		private var _bmpTarget:Bitmap;
 		private var _debug:Boolean = false;
 		private var __faceDetector:ObjectDetector;
@@ -92,20 +92,7 @@ package com.oskarwicha.images.FaceDetection
 		private var _faceImage:Loader;
 		private var _options:ObjectDetectorOptions;
 		private var __isBusy:Boolean = false;
-		
 		private var __tempFaceImg:Bitmap;
-
-		[Inspectable]
-		public function get croppedFace():Bitmap
-		{
-			return _cropedFace;
-		}
-
-		public function set croppedFace(value:Bitmap):void
-		{
-			_cropedFace = value;
-			
-		}
 
 		/**
 		 * <p>
@@ -235,24 +222,25 @@ package com.oskarwicha.images.FaceDetection
 				logger("[Odebrano zdarzenie typu ObjectDetectorEvent.COMPLETE]");
 				//_detector.removeEventListener(ObjectDetectorEvent.DETECTION_COMPLETE, arguments.callee);
 				var rects:Vector.<Rectangle> = e.rects;
+				__croppedFaces = new Vector.<Bitmap>();
 				
-				if (rects)
+				if (rects && rects.length > 0)
 				{
-					for each(var r:Rectangle in rects)
+					for (var i:uint=0; i < rects.length; ++i)
 					{
+						var r:Rectangle = rects[i];
 						// Kopiuje wykadrowaną twarz do zmiennej "cropedFace".
-						croppedFace = cropImage(_bmpTarget, r.topLeft, r.height, r.width);
+						__croppedFaces[i] = cropImage(_bmpTarget, r.topLeft, r.height, r.width);
 						
 						//__eyesDetector.options = getEyesDetectorOptions(0, 0, r.width, r.height);
 						//croppedFace.bitmapData.fillRect(croppedFace.getRect(croppedFace), 0xFF000000 | uint(Math.random()*255)<<8);
 						//__tempFaceImg = cropImage(croppedFace, new Point(0,int(r.height/5.5)), r.height/2.0, r.width);
 						//__eyesDetector.detect(__tempFaceImg.bitmapData);
 						//break;
-						dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED, _cropedFace, r));
 					}
+					dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED, __croppedFaces, rects));
 				}
-				
-				if (!rects.length)
+				else
 				{
 					dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.NO_FACES_DETECTED));
 				}
@@ -292,7 +280,7 @@ package com.oskarwicha.images.FaceDetection
 						
 						//croppedFace = cropImage(croppedFace,rects[0].topLeft,rects[0].height,rects[0].width);
 						
-						dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED, __tempFaceImg, new Rectangle()));
+						//dispatchEvent(new FaceDetectorEvent(FaceDetectorEvent.FACE_CROPPED, __tempFaceImg, new Rectangle()));
 					}
 				}
 			});

@@ -147,7 +147,7 @@ package com.oskarwicha.images.FaceRecognition
 		 * taką samą klasyfikację jak przekazana przez parametr.
 		 * </p>
 		 */
-		public function getFacesWithClassification(classification : String): Vector.<Face>
+		public function getFacesWithClassification(classification : String):Vector.<Face>
 		{
 			var numOfFaces:uint = __facesVector.length;
 			var faces:Vector.<Face> = new Vector.<Face>();
