@@ -1,5 +1,8 @@
 package com.oskarwicha.images.FaceRecognition
 {
+	import flash.events.ErrorEvent;
+	
+	import mx.messaging.messages.ErrorMessage;
 
 	/**
 	 * @flowerModelElementId _TmCksGglEeCqZchJBDddKw
@@ -27,6 +30,10 @@ package com.oskarwicha.images.FaceRecognition
 			var fv2Vector:Vector.<Number> = fv2.featureVectorData;
 			var fv1VectorLength:uint = fv1Vector.length;
 			var fv2VectorLength:uint = fv2Vector.length;
+			
+			if(fv1VectorLength != fv2VectorLength)
+				throw new ArgumentError("Both FeatureVectors need to have the same length.");
+			
 			var num:uint = fv1VectorLength ^ ((fv1VectorLength ^ fv2VectorLength) & ~(int(fv1VectorLength < fv2VectorLength) + 1)); // assigns bigger one
 			var fv1fv2diff:Number;
 			var dist:Number = 0.0;

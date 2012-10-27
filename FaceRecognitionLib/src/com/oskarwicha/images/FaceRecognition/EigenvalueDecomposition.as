@@ -185,7 +185,6 @@ package com.oskarwicha.images.FaceRecognition
 				{
 					Di[uint(i - 1)] = ei;
 				}
-				//D[i] = Di;
 			}
 			return X;
 		}
@@ -400,7 +399,7 @@ package com.oskarwicha.images.FaceRecognition
 					n = n - 2;
 					iter = 0;
 
-						// No convergence yet
+					// No convergence yet
 
 				}
 				else
@@ -653,7 +652,7 @@ package com.oskarwicha.images.FaceRecognition
 							{
 								for (j = i; j <= n; j++)
 								{
-									__H[j][n] = __H[j][n] / t;
+									__H[j][n] /= t; // __H[j][n] / t;
 								}
 							}
 						}

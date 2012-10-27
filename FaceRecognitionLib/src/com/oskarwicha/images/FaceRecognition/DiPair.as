@@ -5,8 +5,10 @@ package com.oskarwicha.images.FaceRecognition
 	 */
 	internal class DiPair
 	{
-		public function DiPair()
+		public function DiPair(distance:Number = 0.0, featureVector:FeatureVector = null)
 		{
+			this.dist = distance;
+			this.fVec = featureVector;
 		}
 		
 		public var dist:Number;
