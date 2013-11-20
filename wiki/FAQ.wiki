@@ -17,3 +17,7 @@ You can start by downloading examples from Download section or by reading tutori
 *_4. My performance is really bad, whats going on?_*
 
 You probably testing your App in debug mode which is 10x slower than when using release version of the same App.  
+
+*_5. When I try to train it, I get an error: error #1088. I'm not sure why that is so?
+
+You probably running one of Examples local and not on web server. For extended answer read this: [https://groups.google.com/d/msg/face-recognition-library-as3-users/sOD_Gst_KSE/X0ioQBlcXJEJ]
